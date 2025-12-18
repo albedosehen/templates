@@ -14,6 +14,15 @@
 └── Configs
 ```
 
+## Project Features
+
+- Node.js `25.2.1` with TypeScript (Works in earlier versions of Node.js too)
+- TypeScript with path aliases `@/` for `src/`
+- ESLint and Prettier for code quality
+- Jest for testing with path alias support
+- Configuration examples in `src/config/`
+- ESNext module support
+
 ## Configuration
 
 - `.eslintrc.cjs` - ESLint with TypeScript
