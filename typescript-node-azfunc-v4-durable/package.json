@@ -1,7 +1,7 @@
 {
-  "name": "typescript-node-azfunc-v4",
+  "name": "typescript-node-azfunc-v4-durable",
   "version": "0.1.0",
-  "description": "Azure Functions v4 TypeScript Template",
+  "description": "Azure Durable Functions v4 TypeScript Template",
   "main": "dist/src/index.js",
   "scripts": {
     "build": "tsc && tsc-alias",
@@ -22,6 +22,7 @@
   "license": "ISC",
   "dependencies": {
     "@azure/functions": "^4.0.0",
+    "durable-functions": "^3.0.0",
     "typescript": "^5.9.3"
   },
   "devDependencies": {

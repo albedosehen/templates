@@ -1,0 +1,17 @@
+.git*
+.vscode
+node_modules
+.DS_Store
+local.settings.json
+test
+tests
+tsconfig.json
+.devcontainer
+.github
+src
+*.ts
+*.map
+.prettierrc.json
+.prettierignore
+eslint.config.mjs
+jest.config.mjs

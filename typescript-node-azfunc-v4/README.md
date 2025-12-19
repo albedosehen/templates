@@ -15,6 +15,7 @@ Template for building Azure Functions v4 applications using TypeScript and the v
 ## Prerequisites
 
 - Node.js 20 LTS
+- Azure Functions Core Tools v4.0.5382+ `npm install -g azure-functions-core-tools@4 --unsafe-perm true`
 - Azure Functions Core Tools v4.0.5382+
 - Azurite (for local storage emulation) or Azure Storage Account
 
