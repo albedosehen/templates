@@ -32,7 +32,7 @@ jobs:
         with:
           node-version-file: "${{ matrix.template }}/.nvmrc"
           cache: "npm"
-          cache-dependency-path: "${{ matrix.template }}/package.json"
+          cache-dependency-path: "${{ matrix.template }}/package-lock.json"
 
       - name: Install dependencies
         working-directory: ${{ matrix.template }}
