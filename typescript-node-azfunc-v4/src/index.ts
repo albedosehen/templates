@@ -19,8 +19,8 @@ export async function httpTrigger(
       message: `Hello, ${name}!`,
       appName: appConfig.appName,
       version: appConfig.version,
-      timestamp: new Date().toISOString(),
-    },
+      timestamp: new Date().toISOString()
+    }
   }
 }
 
@@ -29,14 +29,11 @@ app.http('httpTrigger', {
   methods: ['GET', 'POST'],
   authLevel: 'anonymous',
   route: 'hello',
-  handler: httpTrigger,
+  handler: httpTrigger
 })
 
 // Health check endpoint
-export function healthCheck(
-  request: HttpRequest,
-  context: InvocationContext
-): HttpResponseInit {
+export function healthCheck(request: HttpRequest, context: InvocationContext): HttpResponseInit {
   context.log('Health check requested')
 
   return {
@@ -44,8 +41,8 @@ export function healthCheck(
     jsonBody: {
       status: 'healthy',
       appName: appConfig.appName,
-      version: appConfig.version,
-    },
+      version: appConfig.version
+    }
   }
 }
 
@@ -53,5 +50,5 @@ app.http('healthCheck', {
   methods: ['GET'],
   authLevel: 'anonymous',
   route: 'health',
-  handler: healthCheck,
+  handler: healthCheck
 })

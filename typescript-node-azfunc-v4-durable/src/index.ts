@@ -1,16 +1,12 @@
-import * as df from 'durable-functions'
 import {
   app,
   HttpRequest,
   HttpResponse,
   HttpResponseInit,
-  InvocationContext,
+  InvocationContext
 } from '@azure/functions'
-import {
-  OrchestrationContext,
-  OrchestrationHandler,
-  ActivityHandler,
-} from 'durable-functions'
+import * as df from 'durable-functions'
+import { OrchestrationContext, OrchestrationHandler, ActivityHandler } from 'durable-functions'
 import { config } from '@/config/'
 import type { AppConfig } from '@/types'
 
@@ -23,7 +19,7 @@ const httpStart = async (
 ): Promise<HttpResponse> => {
   const client = df.getClient(context)
   const instanceId = await client.startNew('helloOrchestrator', {
-    input: request.query.get('name') || 'World',
+    input: request.query.get('name') || 'World'
   })
 
   context.log(`Started orchestration with ID = '${instanceId}'`)
@@ -33,20 +29,18 @@ const httpStart = async (
 app.http('httpStart', {
   route: 'orchestrators/hello',
   extraInputs: [df.input.durableClient()],
-  handler: httpStart,
+  handler: httpStart
 })
 
 // ========== Orchestrator Function ==========
-const helloOrchestrator: OrchestrationHandler = function* (
-  context: OrchestrationContext
-) {
-  const outputs = []
-  const input = context.df.getInput()
+const helloOrchestrator: OrchestrationHandler = function* (context: OrchestrationContext) {
+  const outputs: string[] = []
+  const input = String(context.df.getInput() ?? 'World')
 
   // Function chaining pattern - sequential execution
-  outputs.push(yield context.df.callActivity('sayHello', `${input} - Tokyo`))
-  outputs.push(yield context.df.callActivity('sayHello', `${input} - Seattle`))
-  outputs.push(yield context.df.callActivity('sayHello', `${input} - London`))
+  outputs.push((yield context.df.callActivity('sayHello', `${input} - Tokyo`)) as string)
+  outputs.push((yield context.df.callActivity('sayHello', `${input} - Seattle`)) as string)
+  outputs.push((yield context.df.callActivity('sayHello', `${input} - London`)) as string)
 
   return outputs
 }
@@ -54,26 +48,20 @@ const helloOrchestrator: OrchestrationHandler = function* (
 df.app.orchestration('helloOrchestrator', helloOrchestrator)
 
 // ========== Fan-out/Fan-in Orchestrator ==========
-const fanOutFanInOrchestrator: OrchestrationHandler = function* (
-  context: OrchestrationContext
-) {
-  const parallelTasks = []
-
+const fanOutFanInOrchestrator: OrchestrationHandler = function* (context: OrchestrationContext) {
   // Get work batch
-  const workBatch: string[] = yield context.df.callActivity('getWorkBatch')
+  const workBatch = (yield context.df.callActivity('getWorkBatch')) as string[]
 
   // Fan-out: Start parallel activities
-  for (const item of workBatch) {
-    parallelTasks.push(context.df.callActivity('processItem', item))
-  }
+  const parallelTasks = workBatch.map((item) => context.df.callActivity('processItem', item))
 
   // Fan-in: Wait for all to complete
-  const results: string[] = yield context.df.Task.all(parallelTasks)
+  const results = (yield context.df.Task.all(parallelTasks)) as string[]
 
   // Aggregate and return
   return {
     processedCount: results.length,
-    results: results,
+    results: results
   }
 }
 
@@ -94,7 +82,7 @@ const httpStartFanOut = async (
 app.http('httpStartFanOut', {
   route: 'orchestrators/fanout',
   extraInputs: [df.input.durableClient()],
-  handler: httpStartFanOut,
+  handler: httpStartFanOut
 })
 
 // ========== Activity Functions ==========
@@ -111,9 +99,7 @@ const getWorkBatchActivity: ActivityHandler = (): string[] => {
 
 df.app.activity('getWorkBatch', { handler: getWorkBatchActivity })
 
-const processItemActivity: ActivityHandler = async (
-  item: string
-): Promise<string> => {
+const processItemActivity: ActivityHandler = async (item: string): Promise<string> => {
   // Simulate async processing
   await new Promise((resolve) => setTimeout(resolve, 100))
   return `Processed: ${item}`
@@ -122,10 +108,7 @@ const processItemActivity: ActivityHandler = async (
 df.app.activity('processItem', { handler: processItemActivity })
 
 // ========== Health Check ==========
-export function healthCheck(
-  request: HttpRequest,
-  context: InvocationContext
-): HttpResponseInit {
+export function healthCheck(request: HttpRequest, context: InvocationContext): HttpResponseInit {
   context.log('Health check requested')
 
   return {
@@ -134,8 +117,8 @@ export function healthCheck(
       status: 'healthy',
       appName: appConfig.appName,
       version: appConfig.version,
-      durableFunctions: 'enabled',
-    },
+      durableFunctions: 'enabled'
+    }
   }
 }
 
@@ -143,5 +126,5 @@ app.http('healthCheck', {
   methods: ['GET'],
   authLevel: 'anonymous',
   route: 'health',
-  handler: healthCheck,
+  handler: healthCheck
 })
