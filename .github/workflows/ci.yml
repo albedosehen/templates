@@ -1,0 +1,75 @@
+name: Templates CI
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+
+jobs:
+  test-templates:
+    name: Test ${{ matrix.template }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        template:
+          - typescript-node-simple
+          - typescript-node-azfunc-v4
+          - typescript-node-azfunc-v4-durable
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: "${{ matrix.template }}/.nvmrc"
+          cache: "npm"
+          cache-dependency-path: "${{ matrix.template }}/package-lock.json"
+
+      - name: Install dependencies
+        working-directory: ${{ matrix.template }}
+        run: npm ci
+
+      - name: Type check
+        working-directory: ${{ matrix.template }}
+        run: npm run type-check
+
+      - name: Lint
+        working-directory: ${{ matrix.template }}
+        run: npm run lint
+
+      - name: Format check
+        working-directory: ${{ matrix.template }}
+        run: npm run format:check
+
+      - name: Build
+        working-directory: ${{ matrix.template }}
+        run: npm run build
+
+      - name: Test with coverage
+        working-directory: ${{ matrix.template }}
+        run: npm run test:coverage
+
+      - name: Upload coverage artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report-${{ matrix.template }}
+          path: ${{ matrix.template }}/coverage/
+          retention-days: 30
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: build-output-${{ matrix.template }}
+          path: ${{ matrix.template }}/dist/
+          retention-days: 7

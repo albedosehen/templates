@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  # Azure Functions v4 Node.js TypeScript Application
+  azfunc:
+    # Build configuration with multi-stage Dockerfile
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: ${BUILD_TARGET:-production}
+      args:
+        NODE_VERSION: 20
+    
+    # Service name for better clarity
+    container_name: azfunc-v4-app
+    
+    # Expose Azure Functions default port
+    ports:
+      - "${HOST_PORT:-7071}:7071"
+    
+    # Environment variables for Azure Functions runtime
+    environment:
+      # Azure Functions runtime configuration
+      - FUNCTIONS_WORKER_RUNTIME=node
+      - AzureWebJobsScriptRoot=/home/site/wwwroot
+      - AzureFunctionsJobHost__Logging__Console__IsEnabled=true
+      - FUNCTIONS_WORKER_PROCESS_COUNT=1
+      
+      # Node.js environment
+      - NODE_ENV=${NODE_ENV:-production}
+      
+      # Azure Functions Core Tools settings
+      - languageWorkers__node__arguments=--inspect=0.0.0.0:9229
+    
+    # Volume mounts for development hot-reload
+    # Comment out these volumes for production deployment
+    volumes:
+      # Source code for hot reload during development
+      - ./src:/home/site/wwwroot/src:delegated
+      - ./package.json:/home/site/wwwroot/package.json:ro
+      - ./tsconfig.json:/home/site/wwwroot/tsconfig.json:ro
+      - ./host.json:/home/site/wwwroot/host.json:ro
+      # Preserve node_modules from container
+      - /home/site/wwwroot/node_modules
+    
+    # Network configuration
+    networks:
+      - azfunc-network
+    
+    # Health check to ensure service is running
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:7071/admin/host/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    
+    # Restart policy for reliability
+    restart: unless-stopped
+    
+    # Resource limits (adjust based on your needs)
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+# Network configuration for service communication
+networks:
+  azfunc-network:
+    driver: bridge
+    name: azfunc-network
