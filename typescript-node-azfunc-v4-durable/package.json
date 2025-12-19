@@ -5,7 +5,7 @@
   "main": "dist/src/index.js",
   "scripts": {
     "build": "tsc && tsc-alias",
-    "watch": "tsc -w & tsc-alias -w",
+    "build:watch": "tsc -w & tsc-alias -w",
     "prestart": "npm run build",
     "start": "func start",
     "test": "jest",
