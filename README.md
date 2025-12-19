@@ -12,21 +12,27 @@ This repository contains TypeScript/Node.js project templates for quick project 
 
 ## Usage
 
-### Option 1: Clone the entire repository
+### Option 1: Clone the repository and copy the template
 
 ```bash
-git clone <repository-url>
-cd templates
+git clone https://github.com/albedosehen/templates.git
+copy templates/typescript-node-azfunc-v4 my-project
+
+cd my-project
+npm install
+npm run start
 ```
 
-Then copy the template directory you need.
+Continue development in `my-project` folder.
 
 ### Option 2: Download a specific template with tiged
 
 ```bash
 npx tiged albedosehen/templates/<TEMPLATE_NAME> my-project
+
 cd my-project
 npm install
+npm run start
 ```
 
 Replace `<TEMPLATE_NAME>` with the actual template name you want to use.
@@ -38,4 +44,7 @@ npx tiged albedosehen/templates/typescript-node-azfunc-v4 azure-function-app
 
 cd azure-function-app
 npm install
+npm run start
 ```
+
+Cotinue development in `azure-function-app` folder.
