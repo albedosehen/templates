@@ -21,16 +21,6 @@ coverage/
 *.lcov
 
 # ===================================
-# Environment & Configuration Files
-# ===================================
-.env
-.env.local
-.env.*.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-# ===================================
 # IDE & Editor Files
 # ===================================
 # VSCode
@@ -89,4 +79,3 @@ temp/
 # ===================================
 .pnp.*
 .yarn/install-state.gz
-*package-lock.json
