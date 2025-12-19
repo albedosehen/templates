@@ -1,5 +1,11 @@
 import * as df from 'durable-functions'
-import { app, HttpRequest, HttpResponse, InvocationContext } from '@azure/functions'
+import {
+  app,
+  HttpRequest,
+  HttpResponse,
+  HttpResponseInit,
+  InvocationContext,
+} from '@azure/functions'
 import {
   OrchestrationContext,
   OrchestrationHandler,
@@ -116,10 +122,10 @@ const processItemActivity: ActivityHandler = async (
 df.app.activity('processItem', { handler: processItemActivity })
 
 // ========== Health Check ==========
-export async function healthCheck(
+export function healthCheck(
   request: HttpRequest,
   context: InvocationContext
-): Promise<HttpResponse> {
+): HttpResponseInit {
   context.log('Health check requested')
 
   return {

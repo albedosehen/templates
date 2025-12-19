@@ -33,10 +33,10 @@ app.http('httpTrigger', {
 })
 
 // Health check endpoint
-export async function healthCheck(
+export function healthCheck(
   request: HttpRequest,
   context: InvocationContext
-): Promise<HttpResponseInit> {
+): HttpResponseInit {
   context.log('Health check requested')
 
   return {
