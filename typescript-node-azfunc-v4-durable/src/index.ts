@@ -1,111 +1,123 @@
-import {
-  app,
-  HttpRequest,
-  HttpResponse,
-  HttpResponseInit,
-  InvocationContext
-} from '@azure/functions'
+import { app, HttpRequest, HttpResponseInit, InvocationContext } from '@azure/functions'
 import * as df from 'durable-functions'
-import { OrchestrationContext, OrchestrationHandler, ActivityHandler } from 'durable-functions'
 import { config } from '@/config/'
 import type { AppConfig } from '@/types'
 
+// Import activities
+import {
+  sayHelloActivity,
+  getWorkBatchActivity,
+  processItemActivity,
+  processApprovalActivity,
+  checkJobStatusActivity,
+  validateDataActivity,
+  sendNotificationActivity
+} from './functions/activities'
+
+// Import client functions
+import {
+  httpStartHello,
+  httpStartFanOut,
+  httpStartApproval,
+  httpStartMonitor,
+  httpRaiseEvent,
+  httpGetStatus,
+  httpTerminate,
+  httpPurge
+} from './functions/clients'
+
+// Import orchestrators
+import {
+  helloOrchestrator,
+  fanOutFanInOrchestrator,
+  approvalOrchestrator,
+  monitorOrchestrator
+} from './functions/orchestrators'
+
 const appConfig: AppConfig = config
 
-// ========== HTTP Starter (Client) Function ==========
-const httpStart = async (
-  request: HttpRequest,
-  context: InvocationContext
-): Promise<HttpResponse> => {
-  const client = df.getClient(context)
-  const instanceId = await client.startNew('helloOrchestrator', {
-    input: request.query.get('name') || 'World'
-  })
-
-  context.log(`Started orchestration with ID = '${instanceId}'`)
-  return client.createCheckStatusResponse(request, instanceId)
-}
-
-app.http('httpStart', {
-  route: 'orchestrators/hello',
-  extraInputs: [df.input.durableClient()],
-  handler: httpStart
-})
-
-// ========== Orchestrator Function ==========
-const helloOrchestrator: OrchestrationHandler = function* (context: OrchestrationContext) {
-  const outputs: string[] = []
-  const input = String(context.df.getInput() ?? 'World')
-
-  // Function chaining pattern - sequential execution
-  outputs.push((yield context.df.callActivity('sayHello', `${input} - Tokyo`)) as string)
-  outputs.push((yield context.df.callActivity('sayHello', `${input} - Seattle`)) as string)
-  outputs.push((yield context.df.callActivity('sayHello', `${input} - London`)) as string)
-
-  return outputs
-}
-
+// ========== Register Orchestrators ==========
 df.app.orchestration('helloOrchestrator', helloOrchestrator)
-
-// ========== Fan-out/Fan-in Orchestrator ==========
-const fanOutFanInOrchestrator: OrchestrationHandler = function* (context: OrchestrationContext) {
-  // Get work batch
-  const workBatch = (yield context.df.callActivity('getWorkBatch')) as string[]
-
-  // Fan-out: Start parallel activities
-  const parallelTasks = workBatch.map((item) => context.df.callActivity('processItem', item))
-
-  // Fan-in: Wait for all to complete
-  const results = (yield context.df.Task.all(parallelTasks)) as string[]
-
-  // Aggregate and return
-  return {
-    processedCount: results.length,
-    results: results
-  }
-}
-
 df.app.orchestration('fanOutFanInOrchestrator', fanOutFanInOrchestrator)
+df.app.orchestration('approvalOrchestrator', approvalOrchestrator)
+df.app.orchestration('monitorOrchestrator', monitorOrchestrator)
 
-// HTTP starter for fan-out/fan-in
-const httpStartFanOut = async (
-  request: HttpRequest,
-  context: InvocationContext
-): Promise<HttpResponse> => {
-  const client = df.getClient(context)
-  const instanceId = await client.startNew('fanOutFanInOrchestrator')
+// ========== Register Activities ==========
+df.app.activity('sayHello', { handler: sayHelloActivity })
+df.app.activity('getWorkBatch', { handler: getWorkBatchActivity })
+df.app.activity('processItem', { handler: processItemActivity })
+df.app.activity('processApproval', { handler: processApprovalActivity })
+df.app.activity('checkJobStatus', { handler: checkJobStatusActivity })
+df.app.activity('validateData', { handler: validateDataActivity })
+df.app.activity('sendNotification', { handler: sendNotificationActivity })
 
-  context.log(`Started fan-out/fan-in orchestration with ID = '${instanceId}'`)
-  return client.createCheckStatusResponse(request, instanceId)
-}
+// ========== Register HTTP Client Functions ==========
+
+// Start orchestrations
+app.http('httpStartHello', {
+  route: 'orchestrators/hello',
+  methods: ['GET', 'POST'],
+  authLevel: 'anonymous',
+  extraInputs: [df.input.durableClient()],
+  handler: httpStartHello
+})
 
 app.http('httpStartFanOut', {
   route: 'orchestrators/fanout',
+  methods: ['GET', 'POST'],
+  authLevel: 'anonymous',
   extraInputs: [df.input.durableClient()],
   handler: httpStartFanOut
 })
 
-// ========== Activity Functions ==========
-const sayHelloActivity: ActivityHandler = (name: string): string => {
-  return `Hello ${name}!`
-}
+app.http('httpStartApproval', {
+  route: 'orchestrators/approval',
+  methods: ['POST'],
+  authLevel: 'anonymous',
+  extraInputs: [df.input.durableClient()],
+  handler: httpStartApproval
+})
 
-df.app.activity('sayHello', { handler: sayHelloActivity })
+app.http('httpStartMonitor', {
+  route: 'orchestrators/monitor',
+  methods: ['GET', 'POST'],
+  authLevel: 'anonymous',
+  extraInputs: [df.input.durableClient()],
+  handler: httpStartMonitor
+})
 
-const getWorkBatchActivity: ActivityHandler = (): string[] => {
-  // Simulate getting a batch of work items
-  return ['Item1', 'Item2', 'Item3', 'Item4', 'Item5']
-}
+// Management endpoints
+app.http('httpRaiseEvent', {
+  route: 'orchestrators/{instanceId}/raiseEvent',
+  methods: ['POST'],
+  authLevel: 'anonymous',
+  extraInputs: [df.input.durableClient()],
+  handler: httpRaiseEvent
+})
 
-df.app.activity('getWorkBatch', { handler: getWorkBatchActivity })
+app.http('httpGetStatus', {
+  route: 'orchestrators/{instanceId}',
+  methods: ['GET'],
+  authLevel: 'anonymous',
+  extraInputs: [df.input.durableClient()],
+  handler: httpGetStatus
+})
 
-const processItemActivity: ActivityHandler = async (item: string): Promise<string> => {
-  // Simulate async processing
-  await new Promise((resolve) => setTimeout(resolve, 100))
-  return `Processed: ${item}`
-}
+app.http('httpTerminate', {
+  route: 'orchestrators/{instanceId}/terminate',
+  methods: ['POST'],
+  authLevel: 'anonymous',
+  extraInputs: [df.input.durableClient()],
+  handler: httpTerminate
+})
 
-df.app.activity('processItem', { handler: processItemActivity })
+app.http('httpPurge', {
+  route: 'orchestrators/{instanceId}/purge',
+  methods: ['DELETE'],
+  authLevel: 'anonymous',
+  extraInputs: [df.input.durableClient()],
+  handler: httpPurge
+})
 
 // ========== Health Check ==========
 export function healthCheck(request: HttpRequest, context: InvocationContext): HttpResponseInit {
@@ -117,7 +129,23 @@ export function healthCheck(request: HttpRequest, context: InvocationContext): H
       status: 'healthy',
       appName: appConfig.appName,
       version: appConfig.version,
-      durableFunctions: 'enabled'
+      durableFunctions: 'enabled',
+      taskHub: 'MyTaskHub',
+      orchestrators: [
+        'helloOrchestrator',
+        'fanOutFanInOrchestrator',
+        'approvalOrchestrator',
+        'monitorOrchestrator'
+      ],
+      activities: [
+        'sayHello',
+        'getWorkBatch',
+        'processItem',
+        'processApproval',
+        'checkJobStatus',
+        'validateData',
+        'sendNotification'
+      ]
     }
   }
 }
