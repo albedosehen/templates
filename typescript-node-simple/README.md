@@ -1,4 +1,6 @@
-# GraphQL Mesh
+# Basic Nodejs Template
+
+Use this template to greenfield new projects that require a modern typescript setup as a base.
 
 ## Directory Structure
 
