@@ -1,4 +1,4 @@
-# Base
+# Stage: Build
 FROM python:3.12-slim AS base
 
 ENV PYTHONUNBUFFERED=1 \
@@ -14,8 +14,8 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 
 
-# Build: Base
-FROM base AS builder
+# Stage: Uvicorn
+FROM base AS uvicorn
 
 RUN apt-get update && apt-get install -y \
     --no-install-recommends \
@@ -24,8 +24,6 @@ RUN apt-get update && apt-get install -y \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Install uv from a pinned version for supply-chain security
-# Using official versioned installer - update UV_VERSION when upgrading
 ARG UV_VERSION=0.5.11
 RUN curl -LsSf https://astral.sh/uv/${UV_VERSION}/install.sh | sh
 ENV PATH="/root/.local/bin:$PATH"
@@ -38,7 +36,7 @@ ENV PATH="/opt/venv/bin:$PATH"
 RUN uv pip install -e .
 
 
-# Build: Production
+# Stage: Production (Runtime)
 FROM base AS production
 
 RUN apt-get update && apt-get install -y \
@@ -46,7 +44,7 @@ RUN apt-get update && apt-get install -y \
     libpq5 \
     && rm -rf /var/lib/apt/lists/*
 
-COPY --from=builder /opt/venv /opt/venv
+COPY --from=uvicorn /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
 COPY src/ ./src/
@@ -64,8 +62,8 @@ EXPOSE 8000
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "4", "--chdir", "src", "config.wsgi:application"]
 
 
-# Build: Development
-FROM builder AS development
+# Stage: Development (Runtime)
+FROM uvicorn AS development
 
 RUN uv pip install -e ".[dev]"
 
