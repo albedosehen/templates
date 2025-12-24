@@ -40,6 +40,8 @@ htmlcov/
 .gitattributes
 
 # Documentation (exclude specific docs but keep README.md for build)
+README.md
+AGENTS.md
 QUICKSTART.md
 docs/
 
