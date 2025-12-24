@@ -1,114 +1,61 @@
-version: '3.8'
-
 services:
-  # Azure Storage Emulator (Azurite) for Durable Functions state management
   azurite:
-    # Official Azure Storage emulator
     image: mcr.microsoft.com/azure-storage/azurite:latest
-    
     container_name: azurite-storage
-    
-    # Expose Azure Storage service ports
     ports:
-      # Blob service
       - "${AZURITE_BLOB_PORT:-10000}:10000"
-      # Queue service
       - "${AZURITE_QUEUE_PORT:-10001}:10001"
-      # Table service
       - "${AZURITE_TABLE_PORT:-10002}:10002"
-    
-    # Persist storage data
     volumes:
       - azurite-data:/data
-    
-    # Network configuration
     networks:
       - azfunc-durable-network
-    
-    # Command to start Azurite with relaxed settings for local development
     command: azurite --blobHost 0.0.0.0 --queueHost 0.0.0.0 --tableHost 0.0.0.0 --loose
-    
-    # Health check for Azurite availability
     healthcheck:
       test: ["CMD", "nc", "-z", "localhost", "10000"]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 10s
-    
-    # Restart policy
     restart: unless-stopped
 
-  # Azure Durable Functions v4 Node.js TypeScript Application
   azfunc-durable:
-    # Build configuration with multi-stage Dockerfile
     build:
       context: .
       dockerfile: Dockerfile
       target: ${BUILD_TARGET:-production}
       args:
         NODE_VERSION: 20
-    
-    # Service name for better clarity
     container_name: azfunc-durable-app
-    
-    # Expose Azure Functions default port
     ports:
       - "${HOST_PORT:-7072}:7071"
-    
-    # Depend on Azurite to be healthy before starting
     depends_on:
       azurite:
         condition: service_healthy
-    
-    # Environment variables for Azure Durable Functions runtime
     environment:
-      # Azure Functions runtime configuration
       - FUNCTIONS_WORKER_RUNTIME=node
       - AzureWebJobsScriptRoot=/home/site/wwwroot
       - AzureFunctionsJobHost__Logging__Console__IsEnabled=true
       - FUNCTIONS_WORKER_PROCESS_COUNT=1
-      
-      # Azure Storage connection for Durable Functions
-      # Points to Azurite service
       - AzureWebJobsStorage=DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azurite:10000/devstoreaccount1;QueueEndpoint=http://azurite:10001/devstoreaccount1;TableEndpoint=http://azurite:10002/devstoreaccount1;
-      
-      # Task Hub name for Durable Functions orchestrations
       - DurableFunctionsHubName=${TASK_HUB_NAME:-TestTaskHub}
-      
-      # Node.js environment
       - NODE_ENV=${NODE_ENV:-production}
-      
-      # Azure Functions Core Tools settings for debugging
       - languageWorkers__node__arguments=--inspect=0.0.0.0:9229
-    
-    # Volume mounts for development hot-reload
-    # Comment out these volumes for production deployment
     volumes:
-      # Source code for hot reload during development
       - ./src:/home/site/wwwroot/src:delegated
       - ./package.json:/home/site/wwwroot/package.json:ro
       - ./tsconfig.json:/home/site/wwwroot/tsconfig.json:ro
       - ./host.json:/home/site/wwwroot/host.json:ro
-      # Preserve node_modules from container
       - /home/site/wwwroot/node_modules
-    
-    # Network configuration
     networks:
       - azfunc-durable-network
-    
-    # Health check to ensure service is running
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:7071/admin/host/status"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
-    
-    # Restart policy for reliability
     restart: unless-stopped
-    
-    # Resource limits (adjust based on your needs)
     deploy:
       resources:
         limits:
@@ -118,13 +65,11 @@ services:
           cpus: '0.5'
           memory: 512M
 
-# Named volumes for data persistence
 volumes:
   azurite-data:
     name: azurite-storage-data
     driver: local
 
-# Network configuration for service communication
 networks:
   azfunc-durable-network:
     driver: bridge
