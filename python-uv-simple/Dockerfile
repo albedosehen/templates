@@ -1,0 +1,75 @@
+# Secure Dockerfile using Multi-Stage builds and Non-Root User
+
+# Base
+FROM python:3.12-slim AS base
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    UV_SYSTEM_PYTHON=1
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        curl \
+        ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+
+# Create a non-root user
+RUN groupadd -r appuser && \
+    useradd -r -g appuser -u 1000 -m -s /bin/bash appuser
+
+WORKDIR /app
+
+
+# Build: Base
+FROM base AS builder
+
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh && \
+    mv /root/.cargo/bin/uv /usr/local/bin/
+
+COPY pyproject.toml .python-version ./
+COPY src/ ./src/
+
+RUN uv venv /app/.venv && \
+    . /app/.venv/bin/activate && \
+    uv pip install -e .
+
+
+# Build: Production
+FROM base AS production
+
+COPY --from=builder /app/.venv /app/.venv
+COPY --from=builder /app/src /app/src
+
+ENV PATH="/app/.venv/bin:$PATH" \
+    ENVIRONMENT=production \
+    DEBUG=false \
+    LOG_LEVEL=INFO
+
+RUN chown -R appuser:appuser /app
+
+USER appuser
+
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD python -c "import sys; sys.exit(0)"
+
+CMD ["python", "-m", "src"]
+
+
+# Build: Development
+FROM builder AS development
+
+RUN . /app/.venv/bin/activate && \
+    uv pip install -e ".[dev]"
+
+COPY tests/ ./tests/
+
+ENV PATH="/app/.venv/bin:$PATH" \
+    ENVIRONMENT=development \
+    DEBUG=true \
+    LOG_LEVEL=DEBUG
+
+RUN chown -R appuser:appuser /app
+
+USER appuser
+
+CMD ["pytest-watch", "--", "-v"]
