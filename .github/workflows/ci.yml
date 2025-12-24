@@ -58,17 +58,31 @@ jobs:
         working-directory: ${{ matrix.template }}
         run: npm run test:coverage
 
+      - name: Warning - Codecov token not set
+        if: always() && secrets.CODECOV_TOKEN == ''
+        run: echo "[WARNING] CODECOV_TOKEN not set - skipping coverage upload to Codecov"
+
       - name: Upload coverage artifacts
         uses: actions/upload-artifact@v4
-        if: always()
+        if: always() && secrets.CODECOV_TOKEN != ''
         with:
           name: coverage-report-${{ matrix.template }}
           path: ${{ matrix.template }}/coverage/
           retention-days: 30
 
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        if: always() && secrets.CODECOV_TOKEN != ''
+        with:
+          files: ${{ matrix.template }}/coverage/lcov.info
+          flags: ${{ matrix.template }}
+          fail_ci_if_error: false
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
-        if: success()
+        if: success() && secrets.CODECOV_TOKEN != ''
         with:
           name: build-output-${{ matrix.template }}
           path: ${{ matrix.template }}/dist/
@@ -114,13 +128,27 @@ jobs:
         working-directory: python-uv-simple
         run: uv run pytest --cov=src --cov-report=xml --cov-report=term-missing
 
+      - name: Warning - Codecov token not set
+        if: always() && secrets.CODECOV_TOKEN == ''
+        run: echo "⚠️ CODECOV_TOKEN not set - skipping coverage upload to Codecov"
+
       - name: Upload coverage artifacts
         uses: actions/upload-artifact@v4
-        if: always()
+        if: always() && secrets.CODECOV_TOKEN != ''
         with:
           name: coverage-report-python-uv-simple
           path: python-uv-simple/coverage.xml
           retention-days: 30
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        if: always() && secrets.CODECOV_TOKEN != ''
+        with:
+          files: python-uv-simple/coverage.xml
+          flags: python-uv-simple
+          fail_ci_if_error: true
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   test-python-django:
     name: Test python-uv-django
@@ -195,13 +223,27 @@ jobs:
           SECRET_KEY: test-secret-key-for-ci
         run: uv run pytest --cov=src --cov-report=xml --cov-report=term-missing
 
+      - name: Warning - Codecov token not set
+        if: always() && secrets.CODECOV_TOKEN == ''
+        run: echo "⚠️ CODECOV_TOKEN not set - skipping coverage upload to Codecov"
+
       - name: Upload coverage artifacts
         uses: actions/upload-artifact@v4
-        if: always()
+        if: always() && secrets.CODECOV_TOKEN != ''
         with:
           name: coverage-report-python-uv-django
           path: python-uv-django/coverage.xml
           retention-days: 30
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        if: always() && secrets.CODECOV_TOKEN != ''
+        with:
+          files: python-uv-django/coverage.xml
+          flags: python-uv-django
+          fail_ci_if_error: true
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   build-docker-images:
     name: Build ${{ matrix.template }} (${{ matrix.target }})
