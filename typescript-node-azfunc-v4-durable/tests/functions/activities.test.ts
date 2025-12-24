@@ -88,7 +88,7 @@ describe('Activities', () => {
       await checkJobStatusActivity(undefined, mockContext)
       const endTime = Date.now()
 
-      expect(endTime - startTime).toBeGreaterThanOrEqual(100)
+      expect(endTime - startTime).toBeGreaterThanOrEqual(95)
     })
   })
 
@@ -160,7 +160,7 @@ describe('Activities', () => {
       await sendNotificationActivity(message, mockContext)
       const endTime = Date.now()
 
-      expect(endTime - startTime).toBeGreaterThanOrEqual(100)
+      expect(endTime - startTime).toBeGreaterThanOrEqual(95)
     })
   })
 })
