@@ -96,24 +96,23 @@ jobs:
         working-directory: python-uv-simple
         run: |
           uv venv
-          source .venv/bin/activate
           uv pip install -e ".[dev]"
 
       - name: Run ruff linter
         working-directory: python-uv-simple
-        run: source .venv/bin/activate && ruff check .
+        run: uv run ruff check .
 
       - name: Check formatting with black
         working-directory: python-uv-simple
-        run: source .venv/bin/activate && black --check .
+        run: uv run black --check .
 
       - name: Run mypy type checker
         working-directory: python-uv-simple
-        run: source .venv/bin/activate && mypy src
+        run: uv run mypy src
 
       - name: Run tests with coverage
         working-directory: python-uv-simple
-        run: source .venv/bin/activate && pytest --cov=src --cov-report=xml --cov-report=term-missing
+        run: uv run pytest --cov=src --cov-report=xml --cov-report=term-missing
 
       - name: Upload coverage artifacts
         uses: actions/upload-artifact@v4
@@ -160,42 +159,41 @@ jobs:
         working-directory: python-uv-django
         run: |
           uv venv
-          source .venv/bin/activate
           uv pip install -e ".[dev]"
 
       - name: Run ruff linter
         working-directory: python-uv-django
-        run: source .venv/bin/activate && uv run ruff check .
+        run: uv run ruff check .
 
       - name: Check formatting with black
         working-directory: python-uv-django
-        run: source .venv/bin/activate && uv run black --check .
+        run: uv run black --check .
 
       - name: Run mypy type checker
         working-directory: python-uv-django
         continue-on-error: true
-        run: source .venv/bin/activate && uv run mypy src
+        run: uv run mypy src
 
       - name: Run Django system check
         working-directory: python-uv-django
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
           SECRET_KEY: test-secret-key-for-ci
-        run: source .venv/bin/activate && python src/manage.py check
+        run: uv run python src/manage.py check
 
       - name: Run migrations
         working-directory: python-uv-django
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
           SECRET_KEY: test-secret-key-for-ci
-        run: source .venv/bin/activate && python src/manage.py migrate
+        run: uv run python src/manage.py migrate
 
       - name: Run tests with coverage
         working-directory: python-uv-django
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
           SECRET_KEY: test-secret-key-for-ci
-        run: source .venv/bin/activate && pytest --cov=src --cov-report=xml --cov-report=term-missing
+        run: uv run pytest --cov=src --cov-report=xml --cov-report=term-missing
 
       - name: Upload coverage artifacts
         uses: actions/upload-artifact@v4
