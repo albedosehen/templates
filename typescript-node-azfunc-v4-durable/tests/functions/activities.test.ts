@@ -88,7 +88,7 @@ describe('Activities', () => {
       await checkJobStatusActivity(undefined, mockContext)
       const endTime = Date.now()
 
-      expect(endTime - startTime).toBeGreaterThanOrEqual(95)
+      expect(endTime - startTime).toBeGreaterThanOrEqual(100)
     })
   })
 
