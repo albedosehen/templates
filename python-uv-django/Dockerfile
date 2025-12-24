@@ -1,4 +1,4 @@
-# Base
+# Stage: Base
 FROM python:3.12-slim AS base
 
 ENV PYTHONUNBUFFERED=1 \
@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 
 
-# Build: Base
+# Stage: Build
 FROM base AS builder
 
 RUN apt-get update && apt-get install -y \
@@ -24,17 +24,19 @@ RUN apt-get update && apt-get install -y \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-RUN curl -LsSf https://astral.sh/uv/install.sh | sh
-ENV PATH="/root/.cargo/bin:$PATH"
+ARG UV_VERSION=0.5.11
+RUN curl -LsSf https://astral.sh/uv/${UV_VERSION}/install.sh | sh
+ENV PATH="/root/.local/bin:$PATH"
 
-COPY pyproject.toml ./
+COPY pyproject.toml .python-version README.md ./
+COPY src/ ./src/
 
 RUN uv venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 RUN uv pip install -e .
 
 
-# Build: Production
+# Stage: Production (Runtime)
 FROM base AS production
 
 RUN apt-get update && apt-get install -y \
@@ -60,7 +62,7 @@ EXPOSE 8000
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "4", "--chdir", "src", "config.wsgi:application"]
 
 
-# Build: Development
+# Stage: Development (Runtime)
 FROM builder AS development
 
 RUN uv pip install -e ".[dev]"

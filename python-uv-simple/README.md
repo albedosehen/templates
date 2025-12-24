@@ -189,9 +189,11 @@ docker run --rm python-uv-simple:latest
 docker run --rm -v $(pwd)/src:/app/src python-uv-simple:dev
 ```
 
+**Note**: The README.md file needs to exist for the [Dockerfile](./Dockerfile) COPY command and for [pyproject.toml](./pyproject.toml) readme reference to build successfully. You can adjust the files as needed to avoid the document requirement.
+
 ## Project Structure
 
-```
+```bash
 python-uv-simple/
 ├── .github/
 │   └── workflows/
@@ -244,7 +246,7 @@ APP_VERSION=0.1.0
 ### Configuration Options
 
 | Variable | Default | Description |
-|----------|---------|-------------|
+| -------- | ---------- | ------------- |
 | `ENVIRONMENT` | `development` | Deployment environment |
 | `DEBUG` | `true` | Enable debug mode |
 | `LOG_LEVEL` | `INFO` | Logging level |
@@ -271,7 +273,7 @@ def process_data(input_data: dict[str, Any]) -> list[str]:
     return results
 ```
 
-### Testing
+### Writing Tests
 
 - Write tests for all new features
 - Maintain test coverage above 80%
