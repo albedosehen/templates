@@ -1,4 +1,6 @@
-# GraphQL Mesh
+# Basic Nodejs Template
+
+Use this template to greenfield new projects that require a modern typescript setup as a base.
 
 ## Directory Structure
 
@@ -16,7 +18,7 @@
 
 ## Project Features
 
-- Node.js `25.2.1` with TypeScript (Works in earlier versions of Node.js too)
+- Node.js `24.12.0` LTS with TypeScript (Works in earlier and newer versions of Node.js too)
 - TypeScript with path aliases `@/` for `src/`
 - ESLint and Prettier for code quality
 - Jest for testing with path alias support
