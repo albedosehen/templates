@@ -54,9 +54,7 @@ jobs:
         run: uv run black --check .
 
       - name: Run type checking (mypy)
-        env:
-          PYTHONPATH: src
-        run: uv run mypy -p config -p apps -p utils -p type_definitions
+        run: PYTHONPATH=src uv run mypy -p config -p apps -p utils -p type_definitions
         continue-on-error: true
 
       - name: Run Django system check
