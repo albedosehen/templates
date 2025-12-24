@@ -24,7 +24,8 @@ WORKDIR /app
 FROM base AS builder
 
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh && \
-    mv /root/.cargo/bin/uv /usr/local/bin/
+    mv /root/.local/bin/uv /usr/local/bin/ && \
+    mv /root/.local/bin/uvx /usr/local/bin/
 
 COPY pyproject.toml .python-version ./
 COPY src/ ./src/
