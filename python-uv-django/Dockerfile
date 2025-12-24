@@ -24,8 +24,16 @@ RUN apt-get update && apt-get install -y \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-RUN curl -LsSf https://astral.sh/uv/install.sh | sh
-ENV PATH="/root/.local/bin:$PATH"
+# Install uv from a pinned version with checksum verification for supply-chain security
+# Version pinned to 0.5.11 - update version and checksum when upgrading
+ARG UV_VERSION=0.5.11
+ARG UV_CHECKSUM=a8a357925e7f0e2d137eeff28c42e7f24e8f8f79d4e5c9dbfac4b7d85c8c6c6e
+RUN curl -LsSf "https://github.com/astral-sh/uv/releases/download/${UV_VERSION}/uv-x86_64-unknown-linux-gnu.tar.gz" -o uv.tar.gz && \
+    echo "${UV_CHECKSUM}  uv.tar.gz" | sha256sum -c - && \
+    tar -xzf uv.tar.gz && \
+    mv uv-x86_64-unknown-linux-gnu/uv /usr/local/bin/ && \
+    mv uv-x86_64-unknown-linux-gnu/uvx /usr/local/bin/ && \
+    rm -rf uv.tar.gz uv-x86_64-unknown-linux-gnu
 
 COPY pyproject.toml README.md ./
 COPY src/ ./src/
