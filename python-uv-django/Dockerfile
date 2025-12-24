@@ -1,4 +1,4 @@
-# Stage: Build
+# Stage: Base
 FROM python:3.12-slim AS base
 
 ENV PYTHONUNBUFFERED=1 \
@@ -14,8 +14,8 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 
 
-# Stage: Uvicorn
-FROM base AS uvicorn
+# Stage: builder
+FROM base AS builder
 
 RUN apt-get update && apt-get install -y \
     --no-install-recommends \
@@ -44,7 +44,7 @@ RUN apt-get update && apt-get install -y \
     libpq5 \
     && rm -rf /var/lib/apt/lists/*
 
-COPY --from=uvicorn /opt/venv /opt/venv
+COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
 COPY src/ ./src/
@@ -63,7 +63,7 @@ CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "4", "--chdir", "src", "
 
 
 # Stage: Development (Runtime)
-FROM uvicorn AS development
+FROM builder AS development
 
 RUN uv pip install -e ".[dev]"
 

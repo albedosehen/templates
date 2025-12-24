@@ -56,9 +56,10 @@ FROM mcr.microsoft.com/azure-functions/node:4-node24 AS development
 RUN groupadd -g 1001 azurefunc && \
     useradd -r -u 1001 -g azurefunc azurefunc
 
-WORKDIR /home/azurefunc/app
+WORKDIR /home/site/wwwroot
 
-ENV NODE_ENV=development
+ENV AzureWebJobsScriptRoot=/home/site/wwwroot \
+    NODE_ENV=development
 
 COPY --chown=azurefunc:azurefunc package*.json ./
 COPY --chown=azurefunc:azurefunc tsconfig.json ./

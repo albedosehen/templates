@@ -18,7 +18,7 @@ WORKDIR /app
 
 
 # Stage: Build
-FROM base AS uvicorn
+FROM base AS builder
 
 ARG UV_VERSION=0.5.11
 RUN curl -LsSf https://astral.sh/uv/${UV_VERSION}/install.sh | sh && \
@@ -36,8 +36,8 @@ RUN uv venv /app/.venv && \
 # Stage: Production (Runtime)
 FROM base AS production
 
-COPY --from=uvicorn /app/.venv /app/.venv
-COPY --from=uvicorn /app/src /app/src
+COPY --from=builder /app/.venv /app/.venv
+COPY --from=builder /app/src /app/src
 
 ENV PATH="/app/.venv/bin:$PATH" \
     ENVIRONMENT=production \
@@ -55,7 +55,7 @@ CMD ["python", "-m", "src"]
 
 
 # Stage: Development (Runtime)
-FROM uvicorn AS development
+FROM builder AS development
 
 RUN . /app/.venv/bin/activate && \
     uv pip install -e ".[dev]"
