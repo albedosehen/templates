@@ -39,10 +39,10 @@ htmlcov/
 .gitignore
 .gitattributes
 
-# Documentation
-README.md
+# Documentation (exclude specific docs but keep README.md for build)
+AGENTS.md
 QUICKSTART.md
-*.md
+docs/
 
 # CI/CD
 .github/

@@ -4,19 +4,19 @@ A comprehensive Django 5.0+ template using [uv](https://github.com/astral-sh/uv)
 
 ## Features
 
-- 🚀 **Fast Package Management**: Uses uv for lightning-fast dependency resolution and installation
-- 🐍 **Modern Python**: Built for Python 3.12 with modern features and type hints
-- 🌐 **Django 5.0+**: Latest Django with all modern features
-- 🔌 **REST API**: Django REST Framework pre-configured with ViewSets and serializers
-- 🗄️ **PostgreSQL Ready**: Production-ready database configuration
-- 📦 **Redis Support**: Caching and session storage ready
-- 🧪 **Comprehensive Testing**: pytest-django with factory-boy for test fixtures
-- 🔍 **Code Quality**: Integrated linting (ruff), formatting (black), and type checking (mypy with django-stubs)
-- 🐳 **Docker Support**: Multi-stage Dockerfile with docker-compose for PostgreSQL and Redis
-- 🔄 **CI/CD**: GitHub Actions workflow with PostgreSQL service
-- 📁 **Clean Architecture**: Well-organized project structure following Django conventions
-- 🔐 **Security**: Production-ready security settings and environment-based configuration
-- 📝 **Admin Interface**: Customized Django admin for Task management
+- **Fast Package Management**: Uses uv for lightning-fast dependency resolution and installation
+- **Modern Python**: Built for Python 3.12 with modern features and type hints
+- **Django 5.0+**: Latest Django with all modern features
+- **REST API**: Django REST Framework pre-configured with ViewSets and serializers
+- **PostgreSQL Ready**: Production-ready database configuration
+- **Redis Support**: Caching and session storage ready
+- **Comprehensive Testing**: pytest-django with factory-boy for test fixtures
+- **Code Quality**: Integrated linting (ruff), formatting (black), and type checking (mypy with django-stubs)
+- **Docker Support**: Multi-stage Dockerfile with docker-compose for PostgreSQL and Redis
+- **CI/CD**: GitHub Actions workflow with PostgreSQL service
+- **Clean Architecture**: Well-organized project structure following Django conventions
+- **Security**: Production-ready security settings and environment-based configuration
+- **Admin Interface**: Customized Django admin for Task management
 
 ## Prerequisites
 
@@ -67,7 +67,7 @@ Visit [http://localhost:8000](http://localhost:8000)
 
 ## Project Structure
 
-```
+```bash
 python-uv-django/
 ├── .github/
 │   └── workflows/
@@ -276,7 +276,7 @@ The template includes a fully functional REST API for Task management.
 #### Tasks API
 
 | Method | Endpoint | Description |
-|--------|----------|-------------|
+| -------- | ---------- | ------------- |
 | GET | `/api/tasks/` | List all tasks (paginated) |
 | POST | `/api/tasks/` | Create a new task |
 | GET | `/api/tasks/{id}/` | Retrieve task details |
@@ -452,7 +452,7 @@ def my_view(request: HttpRequest) -> HttpResponse:
     return HttpResponse("Hello")
 ```
 
-### Testing
+### Writing Tests
 
 Write comprehensive tests using pytest-django:
 
@@ -473,6 +473,7 @@ def test_task_creation(task_factory):
 ### Preparation
 
 1. **Set production environment variables**:
+
    ```env
    DEBUG=False
    SECRET_KEY=<strong-random-key>
@@ -481,11 +482,13 @@ def test_task_creation(task_factory):
    ```
 
 2. **Collect static files**:
+
    ```bash
    python src/manage.py collectstatic --noinput
    ```
 
 3. **Run migrations**:
+
    ```bash
    python src/manage.py migrate
    ```
@@ -508,6 +511,8 @@ For production deployment:
 4. Configure SSL/TLS certificates
 5. Set up monitoring and logging
 6. Regular backups of database and media files
+
+**Note**: The README.md file needs to exist for the [Dockerfile](./Dockerfile) COPY command and for [pyproject.toml](./pyproject.toml) readme reference to build successfully. You can adjust the files as needed to avoid the document requirement.
 
 ### Security Checklist
 
@@ -580,6 +585,7 @@ uv pip install -e ".[dev]"
 #### "django.db.utils.OperationalError: no such table"
 
 **Solution**: Run migrations:
+
 ```bash
 python src/manage.py migrate
 ```
@@ -587,6 +593,7 @@ python src/manage.py migrate
 #### "ModuleNotFoundError: No module named 'django'"
 
 **Solution**: Activate virtual environment and install dependencies:
+
 ```bash
 source .venv/bin/activate
 uv pip install -e ".[dev]"
@@ -595,6 +602,7 @@ uv pip install -e ".[dev]"
 #### Port 8000 already in use
 
 **Solution**: Use a different port or kill the existing process:
+
 ```bash
 python src/manage.py runserver 8001
 ```
@@ -602,21 +610,23 @@ python src/manage.py runserver 8001
 ### Getting Help
 
 - Check the [QUICKSTART.md](python-uv-django/QUICKSTART.md) guide
-- Review Django documentation: https://docs.djangoproject.com/
-- Check DRF documentation: https://www.django-rest-framework.org/
-- Review uv documentation: https://github.com/astral-sh/uv
+- Review Django documentation: <https://docs.djangoproject.com/>
+- Check DRF documentation: <https://www.django-rest-framework.org/>
+- Review uv documentation: <https://github.com/astral-sh/uv>
 
 ## Contributing
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
 3. Run code quality checks:
+
    ```bash
    uv run ruff check --fix .
    uv run black .
    uv run mypy src
    uv run pytest
    ```
+
 4. Commit your changes (`git commit -m 'Add amazing feature'`)
 5. Push to the branch (`git push origin feature/amazing-feature`)
 6. Open a Pull Request
