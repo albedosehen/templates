@@ -27,7 +27,7 @@ RUN curl -LsSf https://astral.sh/uv/install.sh | sh && \
     mv /root/.local/bin/uv /usr/local/bin/ && \
     mv /root/.local/bin/uvx /usr/local/bin/
 
-COPY pyproject.toml .python-version ./
+COPY pyproject.toml .python-version README.md ./
 COPY src/ ./src/
 
 RUN uv venv /app/.venv && \
