@@ -30,7 +30,7 @@ ARG UV_VERSION=0.5.11
 RUN curl -LsSf https://astral.sh/uv/${UV_VERSION}/install.sh | sh
 ENV PATH="/root/.local/bin:$PATH"
 
-COPY pyproject.toml ./
+COPY pyproject.toml .python-version README.md ./
 COPY src/ ./src/
 
 RUN uv venv /opt/venv

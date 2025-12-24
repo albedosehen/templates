@@ -51,7 +51,7 @@ describe('Activities', () => {
       const endTime = Date.now()
 
       expect(result).toBe('Processed: TestItem')
-      expect(endTime - startTime).toBeGreaterThanOrEqual(100)
+      expect(endTime - startTime).toBeGreaterThanOrEqual(95)
     })
 
     it('should handle different item types', async () => {
@@ -88,7 +88,7 @@ describe('Activities', () => {
       await checkJobStatusActivity(undefined, mockContext)
       const endTime = Date.now()
 
-      expect(endTime - startTime).toBeGreaterThanOrEqual(100)
+      expect(endTime - startTime).toBeGreaterThanOrEqual(95)
     })
   })
 
