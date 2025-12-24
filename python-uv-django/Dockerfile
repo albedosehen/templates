@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 
 
-# Stage: builder
+# Stage: Build
 FROM base AS builder
 
 RUN apt-get update && apt-get install -y \
