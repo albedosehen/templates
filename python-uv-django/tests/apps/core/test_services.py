@@ -38,3 +38,11 @@ class TestTaskService:
 
         assert completed_task.status == Task.Status.COMPLETED
         assert completed_task.completed_at is not None
+
+    def test_start_task(self, sample_task):
+        """Test starting a task through service."""
+        assert sample_task.status == Task.Status.PENDING
+
+        started_task = TaskService.start_task(sample_task)
+
+        assert started_task.status == Task.Status.IN_PROGRESS
