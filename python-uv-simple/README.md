@@ -2,15 +2,26 @@
 
 A modern Python 3.12 template using [uv](https://github.com/astral-sh/uv) for blazingly fast package management. This template follows best practices for Python development with comprehensive tooling for linting, formatting, type checking, and testing.
 
+## 📝 Recent Changes
+
+This template has been refactored to follow modern Pythonic patterns:
+- ✅ Renamed to importable package: `python_uv_simple`
+- ✅ Uses Pydantic V2 BaseSettings for configuration
+- ✅ Flat package structure (removed `types/`, `config/`, `utils/` directories)
+- ✅ Uses Python stdlib `logging` directly (no custom wrappers)
+
+See the [Project Structure](#project-structure) section for details.
+
 ## Features
 
 - **Fast Package Management**: Uses uv for lightning-fast dependency resolution and installation
 - **Modern Python**: Built for Python 3.12 with modern features and type hints
+- **Modern Pydantic V2**: Uses Pydantic BaseSettings for type-safe configuration
 - **Testing**: Comprehensive test suite with pytest and coverage reporting
 - **Code Quality**: Integrated linting (ruff), formatting (black), and type checking (mypy)
 - **Docker Support**: Multi-stage Dockerfile for both development and production
 - **CI/CD**: GitHub Actions workflow for automated testing and building
-- **Clean Architecture**: Well-organized project structure with separation of concerns
+- **Flat Package Structure**: No unnecessary subdirectories, Python-first approach
 
 ## Prerequisites
 

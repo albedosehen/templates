@@ -1,5 +1,10 @@
 """Core app views."""
 
+from __future__ import annotations
+
+from typing import Any
+
+from django.db.models import QuerySet
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.views.generic import DetailView, ListView
@@ -21,7 +26,7 @@ def index(request: HttpRequest) -> HttpResponse:
     return render(request, "core/index.html", context)
 
 
-class TaskListView(ListView):
+class TaskListView(ListView):  # type: ignore[type-arg]
     """List view for tasks."""
 
     model = Task
@@ -29,7 +34,7 @@ class TaskListView(ListView):
     context_object_name = "tasks"
     paginate_by = 10
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet[Task]:
         """Override queryset to add filtering."""
         queryset = super().get_queryset()
         status = self.request.GET.get("status")
@@ -38,7 +43,7 @@ class TaskListView(ListView):
         return queryset
 
 
-class TaskDetailView(DetailView):
+class TaskDetailView(DetailView):  # type: ignore[type-arg]
     """Detail view for a single task."""
 
     model = Task

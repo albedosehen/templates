@@ -1,13 +1,22 @@
 """Admin configuration for core app."""
 
+from __future__ import annotations
+
+from typing import Any, TYPE_CHECKING
+
 from django.contrib import admin
+from django.db.models import QuerySet
+from django.http import HttpRequest
 from django.utils.html import format_html
 
-from .models import Task
+if TYPE_CHECKING:
+    from .models import Task
+else:
+    from .models import Task
 
 
 @admin.register(Task)
-class TaskAdmin(admin.ModelAdmin):
+class TaskAdmin(admin.ModelAdmin):  # type: ignore[type-arg]
     """Admin interface for Task model."""
 
     list_display = (
@@ -44,7 +53,7 @@ class TaskAdmin(admin.ModelAdmin):
     @admin.display(description="Status")
     def status_badge(self, obj: Task) -> str:
         """Display status with color badge."""
-        colors = {
+        colors: dict[str, str] = {
             Task.Status.PENDING: "gray",
             Task.Status.IN_PROGRESS: "blue",
             Task.Status.COMPLETED: "green",
@@ -64,21 +73,27 @@ class TaskAdmin(admin.ModelAdmin):
         return obj.is_overdue
 
     @admin.action(description="Mark selected tasks as completed")
-    def mark_as_completed(self, request, queryset):
+    def mark_as_completed(
+        self, request: HttpRequest, queryset: QuerySet[Task]
+    ) -> None:
         """Mark selected tasks as completed."""
         for task in queryset:
             task.mark_completed()
         self.message_user(request, f"{queryset.count()} tasks marked as completed.")
 
     @admin.action(description="Mark selected tasks as in progress")
-    def mark_as_in_progress(self, request, queryset):
+    def mark_as_in_progress(
+        self, request: HttpRequest, queryset: QuerySet[Task]
+    ) -> None:
         """Mark selected tasks as in progress."""
         for task in queryset:
             task.mark_in_progress()
         self.message_user(request, f"{queryset.count()} tasks marked as in progress.")
 
     @admin.action(description="Mark selected tasks as pending")
-    def mark_as_pending(self, request, queryset):
+    def mark_as_pending(
+        self, request: HttpRequest, queryset: QuerySet[Task]
+    ) -> None:
         """Mark selected tasks as pending."""
         queryset.update(status=Task.Status.PENDING)
         self.message_user(request, f"{queryset.count()} tasks marked as pending.")

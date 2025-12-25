@@ -8,13 +8,14 @@ A comprehensive Django 5.0+ template using [uv](https://github.com/astral-sh/uv)
 - **Modern Python**: Built for Python 3.12 with modern features and type hints
 - **Django 5.0+**: Latest Django with all modern features
 - **REST API**: Django REST Framework pre-configured with ViewSets and serializers
+- **Services/Selectors Pattern**: Clean architecture with separated business logic and query layers
 - **PostgreSQL Ready**: Production-ready database configuration
 - **Redis Support**: Caching and session storage ready
 - **Comprehensive Testing**: pytest-django with factory-boy for test fixtures
 - **Code Quality**: Integrated linting (ruff), formatting (black), and type checking (mypy with django-stubs)
 - **Docker Support**: Multi-stage Dockerfile with docker-compose for PostgreSQL and Redis
 - **CI/CD**: GitHub Actions workflow with PostgreSQL service
-- **Clean Architecture**: Well-organized project structure following Django conventions
+- **Django-Idiomatic Structure**: No Node.js patterns, pure Django best practices
 - **Security**: Production-ready security settings and environment-based configuration
 - **Admin Interface**: Customized Django admin for Task management
 
@@ -71,60 +72,76 @@ Visit [http://localhost:8000](http://localhost:8000)
 python-uv-django/
 ├── .github/
 │   └── workflows/
-│       └── ci.yml                 # GitHub Actions CI/CD pipeline
+│       └── ci.yml                    # GitHub Actions CI/CD pipeline
 ├── src/
-│   ├── manage.py                  # Django management script
-│   ├── config/                    # Project configuration
+│   ├── manage.py                     # Django management script
+│   ├── config/                       # Django project configuration
 │   │   ├── settings/
 │   │   │   ├── __init__.py
-│   │   │   ├── base.py           # Shared settings
-│   │   │   ├── development.py    # Development overrides
-│   │   │   └── production.py     # Production settings
-│   │   ├── urls.py               # Root URL configuration
-│   │   ├── wsgi.py               # WSGI application
-│   │   └── asgi.py               # ASGI application
+│   │   │   ├── base.py              # Shared settings
+│   │   │   ├── development.py       # Development overrides
+│   │   │   └── production.py        # Production settings
+│   │   ├── urls.py                  # Root URL configuration
+│   │   ├── wsgi.py                  # WSGI application
+│   │   └── asgi.py                  # ASGI application
 │   ├── apps/
-│   │   ├── core/                 # Core application
-│   │   │   ├── models.py         # Task model
-│   │   │   ├── views.py          # Django views
-│   │   │   ├── urls.py           # URL patterns
-│   │   │   ├── admin.py          # Admin configuration
-│   │   │   ├── serializers.py    # DRF serializers
-│   │   │   └── migrations/       # Database migrations
-│   │   └── api/                  # API application
-│   │       ├── views.py          # API ViewSets
-│   │       ├── urls.py           # API routes
-│   │       └── serializers.py    # API serializers
-│   ├── types/                    # Type definitions
-│   └── utils/
-│       └── logger.py             # Django-aware logging utility
+│   │   ├── core/                    # Core application
+│   │   │   ├── models.py            # Task model
+│   │   │   ├── views.py             # Django views
+│   │   │   ├── services.py          # Business logic layer
+│   │   │   ├── selectors.py         # Query layer
+│   │   │   ├── urls.py              # URL patterns
+│   │   │   ├── admin.py             # Admin configuration
+│   │   │   ├── serializers.py       # DRF serializers
+│   │   │   └── migrations/          # Database migrations
+│   │   └── api/                     # API application
+│   │       ├── views.py             # API ViewSets
+│   │       ├── urls.py              # API routes
+│   │       └── serializers.py       # API serializers
+│   └── common/                      # Shared Django utilities
+│       ├── models.py                # Abstract base models
+│       └── mixins.py                # Reusable model mixins (if needed)
 ├── tests/
-│   ├── conftest.py               # Pytest fixtures and configuration
+│   ├── conftest.py                  # Pytest fixtures and configuration
 │   ├── apps/
 │   │   ├── core/
-│   │   │   └── test_models.py    # Model tests
+│   │   │   ├── test_models.py       # Model tests
+│   │   │   ├── test_services.py     # Service layer tests
+│   │   │   └── test_selectors.py    # Selector tests
 │   │   └── api/
-│   │       └── test_api.py       # API endpoint tests
+│   │       └── test_api.py          # API endpoint tests
 │   └── config/
-│       └── test_settings.py      # Settings tests
-├── .env.example                   # Environment variables template
-├── .dockerignore                  # Docker ignore patterns
-├── .gitignore                     # Git ignore patterns
-├── .python-version                # Python version specification
-├── docker-compose.yml             # Multi-service Docker setup
-├── Dockerfile                     # Multi-stage Docker build
-├── pyproject.toml                 # Project configuration and dependencies
-├── QUICKSTART.md                  # Quick start guide
-└── README.md                      # This file
+│       └── test_settings.py         # Settings tests
+├── .env.example                      # Environment variables template
+├── .dockerignore                     # Docker ignore patterns
+├── .gitignore                        # Git ignore patterns
+├── .python-version                   # Python version specification
+├── docker-compose.yml                # Multi-service Docker setup
+├── Dockerfile                        # Multi-stage Docker build
+├── pyproject.toml                    # Project configuration and dependencies
+├── QUICKSTART.md                     # Quick start guide
+└── README.md                         # This file
 ```
 
 ### Key Directories
 
 - **`src/config/`**: Django project configuration with environment-specific settings
-- **`src/apps/core/`**: Main application with Task model, views, and admin
+- **`src/apps/core/`**: Main application with Task model, business logic (services), and queries (selectors)
 - **`src/apps/api/`**: REST API implementation with DRF ViewSets
-- **`src/utils/`**: Utility functions and helper classes
+- **`src/common/`**: Shared Django code (abstract models, mixins, etc.)
 - **`tests/`**: Comprehensive test suite with pytest-django
+
+### Architecture Patterns
+
+This template follows Django best practices with a **services/selectors pattern** for clean architecture:
+
+- **Models** ([`models.py`](python-uv-django/src/apps/core/models.py)): Django ORM models only, minimal business logic
+- **Selectors** ([`selectors.py`](python-uv-django/src/apps/core/selectors.py)): Query layer - functions that fetch data from the database
+- **Services** ([`services.py`](python-uv-django/src/apps/core/services.py)): Business logic layer - functions that modify data or perform actions
+- **Views**: Thin layer that calls services/selectors and returns responses
+- **Common** ([`common/`](python-uv-django/src/common/)): Shared utilities like abstract base models
+
+This separation makes code easier to test, reuse, and maintain.
 
 ## Available Commands
 
@@ -200,6 +217,108 @@ uv run black --check .
 # Run type checker
 uv run mypy src
 ```
+
+## Architecture
+
+### Services/Selectors Pattern
+
+This template implements a clean architecture pattern that separates concerns:
+
+#### **Selectors** (Query Layer)
+
+Selectors are functions that **fetch data** from the database. They should be pure query functions with no side effects.
+
+**Example** ([`src/apps/core/selectors.py`](python-uv-django/src/apps/core/selectors.py)):
+
+```python
+from django.db.models import QuerySet
+from django.utils import timezone
+from apps.core.models import Task
+
+
+class TaskSelector:
+    """Selector for Task queries."""
+
+    @staticmethod
+    def get_pending_tasks() -> QuerySet[Task]:
+        """Get all pending tasks."""
+        return Task.objects.filter(status=Task.Status.PENDING)
+
+    @staticmethod
+    def get_completed_tasks() -> QuerySet[Task]:
+        """Get all completed tasks."""
+        return Task.objects.filter(status=Task.Status.COMPLETED)
+
+    @staticmethod
+    def get_overdue_tasks() -> QuerySet[Task]:
+        """Get overdue tasks."""
+        return Task.objects.filter(due_date__lt=timezone.now()).exclude(
+            status=Task.Status.COMPLETED
+        )
+```
+
+#### **Services** (Business Logic Layer)
+
+Services are functions that **perform actions** or **modify data**. They contain business logic and orchestrate operations.
+
+**Example** ([`src/apps/core/services.py`](python-uv-django/src/apps/core/services.py)):
+
+```python
+from apps.core.models import Task
+
+
+class TaskService:
+    """Service for Task business logic."""
+
+    @staticmethod
+    def create_task(title: str, description: str = "", priority: int = 0) -> Task:
+        """Create a new task."""
+        return Task.objects.create(
+            title=title,
+            description=description,
+            priority=priority,
+        )
+
+    @staticmethod
+    def complete_task(task: Task) -> Task:
+        """Mark task as completed."""
+        task.mark_completed()
+        task.save()
+        return task
+```
+
+#### **Using Services/Selectors in Views**
+
+Views should be thin - they just call services/selectors and return responses:
+
+```python
+from django.http import HttpRequest, HttpResponse
+from django.shortcuts import render, redirect
+from apps.core.selectors import TaskSelector
+from apps.core.services import TaskService
+
+def task_list(request: HttpRequest) -> HttpResponse:
+    """Display list of all tasks."""
+    tasks = TaskSelector.get_pending_tasks()
+    return render(request, "core/task_list.html", {"tasks": tasks})
+
+def create_task_view(request: HttpRequest) -> HttpResponse:
+    """Create a new task."""
+    if request.method == "POST":
+        task = TaskService.create_task(
+            title=request.POST["title"],
+            description=request.POST.get("description", ""),
+        )
+        return redirect("task-detail", task_id=task.id)
+    return render(request, "core/task_create.html")
+```
+
+#### **Benefits of This Pattern**
+
+- **Testability**: Services and selectors are easy to unit test
+- **Reusability**: Business logic can be reused across views, APIs, management commands
+- **Clarity**: Clear separation between queries (selectors) and actions (services)
+- **Maintainability**: Business logic is centralized, not scattered across views
 
 ### Run All Quality Checks
 

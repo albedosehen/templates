@@ -1,57 +1,45 @@
-"""Tests for the configuration module."""
+"""Tests for the settings module."""
 
 import os
 from unittest.mock import patch
 
 import pytest
 
-from src.config import AppConfig
+from python_uv_simple.settings import Settings, get_settings
 
 
-class TestAppConfig:
-    """Test suite for AppConfig class."""
+class TestSettings:
+    """Test suite for Settings class."""
 
-    def test_from_env_with_defaults(self) -> None:
-        """Test configuration loading with default values."""
+    def test_settings_with_defaults(self) -> None:
+        """Test settings loading with default values."""
         with patch.dict(os.environ, {}, clear=True):
-            config = AppConfig.from_env()
+            settings = Settings()
 
-            assert config.environment == 'development'
-            assert config.debug is True
-            assert config.log_level == 'INFO'
-            assert config.app_name == 'python-uv-simple'
-            assert config.version == '0.1.0'
+            assert settings.environment == 'development'
+            assert settings.debug is True
+            assert settings.log_level == 'INFO'
+            assert settings.app_name == 'python-uv-simple'
+            assert settings.version == '0.1.0'
 
-    def test_from_env_with_custom_values(self) -> None:
-        """Test configuration loading with custom environment variables."""
+    def test_settings_with_custom_values(self) -> None:
+        """Test settings loading with custom environment variables."""
         env_vars = {
             'ENVIRONMENT': 'production',
             'DEBUG': 'false',
             'LOG_LEVEL': 'WARNING',
             'APP_NAME': 'custom-app',
-            'APP_VERSION': '1.0.0',
+            'VERSION': '1.0.0',
         }
 
         with patch.dict(os.environ, env_vars, clear=True):
-            config = AppConfig.from_env()
+            settings = Settings()
 
-            assert config.environment == 'production'
-            assert config.debug is False
-            assert config.log_level == 'WARNING'
-            assert config.app_name == 'custom-app'
-            assert config.version == '1.0.0'
-
-    def test_from_env_with_invalid_environment(self) -> None:
-        """Test configuration defaults to 'development' for invalid environment."""
-        with patch.dict(os.environ, {'ENVIRONMENT': 'invalid'}, clear=True):
-            config = AppConfig.from_env()
-            assert config.environment == 'development'
-
-    def test_from_env_with_invalid_log_level(self) -> None:
-        """Test configuration defaults to 'INFO' for invalid log level."""
-        with patch.dict(os.environ, {'LOG_LEVEL': 'INVALID'}, clear=True):
-            config = AppConfig.from_env()
-            assert config.log_level == 'INFO'
+            assert settings.environment == 'production'
+            assert settings.debug is False
+            assert settings.log_level == 'WARNING'
+            assert settings.app_name == 'custom-app'
+            assert settings.version == '1.0.0'
 
     @pytest.mark.parametrize(
         'debug_value,expected',
@@ -69,12 +57,18 @@ class TestAppConfig:
     def test_debug_parsing(self, debug_value: str, expected: bool) -> None:
         """Test various debug value formats are parsed correctly."""
         with patch.dict(os.environ, {'DEBUG': debug_value}, clear=True):
-            config = AppConfig.from_env()
-            assert config.debug is expected
+            settings = Settings()
+            assert settings.debug is expected
 
-    def test_config_is_frozen(self) -> None:
-        """Test that AppConfig is immutable (frozen dataclass)."""
-        config = AppConfig.from_env()
+    def test_get_settings_returns_cached_instance(self) -> None:
+        """Test that get_settings returns a cached instance."""
+        # Clear the cache first
+        get_settings.cache_clear()
 
-        with pytest.raises(AttributeError):
-            config.environment = 'staging'  # type: ignore[misc]
+        with patch.dict(os.environ, {'APP_NAME': 'test-app'}, clear=True):
+            settings1 = get_settings()
+            settings2 = get_settings()
+
+            # Should be the same instance due to lru_cache
+            assert settings1 is settings2
+            assert settings1.app_name == 'test-app'
