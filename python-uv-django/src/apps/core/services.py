@@ -26,4 +26,5 @@ class TaskService:
     def start_task(task: Task) -> Task:
         """Mark task as in progress."""
         task.mark_in_progress()
+        task.save()
         return task
