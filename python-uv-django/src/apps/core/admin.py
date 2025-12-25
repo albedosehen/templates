@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 from django.contrib import admin
 from django.db.models import QuerySet
@@ -73,27 +73,21 @@ class TaskAdmin(admin.ModelAdmin):  # type: ignore[type-arg]
         return obj.is_overdue
 
     @admin.action(description="Mark selected tasks as completed")
-    def mark_as_completed(
-        self, request: HttpRequest, queryset: QuerySet[Task]
-    ) -> None:
+    def mark_as_completed(self, request: HttpRequest, queryset: QuerySet[Task]) -> None:
         """Mark selected tasks as completed."""
         for task in queryset:
             task.mark_completed()
         self.message_user(request, f"{queryset.count()} tasks marked as completed.")
 
     @admin.action(description="Mark selected tasks as in progress")
-    def mark_as_in_progress(
-        self, request: HttpRequest, queryset: QuerySet[Task]
-    ) -> None:
+    def mark_as_in_progress(self, request: HttpRequest, queryset: QuerySet[Task]) -> None:
         """Mark selected tasks as in progress."""
         for task in queryset:
             task.mark_in_progress()
         self.message_user(request, f"{queryset.count()} tasks marked as in progress.")
 
     @admin.action(description="Mark selected tasks as pending")
-    def mark_as_pending(
-        self, request: HttpRequest, queryset: QuerySet[Task]
-    ) -> None:
+    def mark_as_pending(self, request: HttpRequest, queryset: QuerySet[Task]) -> None:
         """Mark selected tasks as pending."""
         queryset.update(status=Task.Status.PENDING)
         self.message_user(request, f"{queryset.count()} tasks marked as pending.")
