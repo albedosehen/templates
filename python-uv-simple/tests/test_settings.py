@@ -4,6 +4,7 @@ import os
 from unittest.mock import patch
 
 import pytest
+from pydantic import ValidationError
 
 from python_uv_simple.settings import Settings, get_settings
 
@@ -72,3 +73,17 @@ class TestSettings:
             # Should be the same instance due to lru_cache
             assert settings1 is settings2
             assert settings1.app_name == 'test-app'
+
+    def test_invalid_environment_raises_validation_error(self) -> None:
+        """Test that invalid environment value raises ValidationError."""
+        with patch.dict(os.environ, {'ENVIRONMENT': 'invalid'}, clear=True):
+            with pytest.raises(ValidationError) as exc_info:
+                Settings()
+            assert 'environment' in str(exc_info.value)
+
+    def test_invalid_log_level_raises_validation_error(self) -> None:
+        """Test that invalid log level value raises ValidationError."""
+        with patch.dict(os.environ, {'LOG_LEVEL': 'INVALID'}, clear=True):
+            with pytest.raises(ValidationError) as exc_info:
+                Settings()
+            assert 'log_level' in str(exc_info.value)
