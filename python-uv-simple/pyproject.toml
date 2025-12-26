@@ -8,18 +8,18 @@ authors = [
     { name = "Shon Thomas", email = "shon@oneiriq.com" }
 ]
 dependencies = [
-    "pydantic>=2.0.0",
-    "pydantic-settings>=2.0.0",
+    "pydantic>=2.12.0",
+    "pydantic-settings>=2.6.0",
 ]
 
 [project.optional-dependencies]
 dev = [
-    "pytest>=8.0.0", # testing
-    "pytest-cov>=5.0.0", # coverage reporting
+    "pytest>=9.0.0", # testing
+    "pytest-cov>=7.0.0", # coverage reporting
     "pytest-watch>=4.2.0",
-    "ruff>=0.1.0", # linter
-    "black>=24.0.0", # formatter
-    "mypy>=1.8.0", # static type checker
+    "ruff>=0.14.0", # linter
+    "black>=25.0.0", # formatter
+    "mypy>=1.19.0", # static type checker
     "pylint>=4.0.4", # additional linter
 ]
 
@@ -133,3 +133,14 @@ disable = [
 
 [tool.pylint.basic]
 good-names = ['i', 'j', 'k', 'ex', 'id', 'db', '_']
+
+[dependency-groups]
+dev = [
+    "black>=25.12.0",
+    "mypy>=1.19.1",
+    "pylint>=4.0.4",
+    "pytest>=9.0.2",
+    "pytest-cov>=7.0.0",
+    "pytest-watch>=4.2.0",
+    "ruff>=0.14.10",
+]
