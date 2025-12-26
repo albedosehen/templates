@@ -21,3 +21,9 @@ class TaskService:
         task.mark_completed()
         task.save()
         return task
+
+    @staticmethod
+    def start_task(task: Task) -> Task:
+        """Mark task as in progress."""
+        task.mark_in_progress()
+        return task

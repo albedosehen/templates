@@ -16,7 +16,7 @@ ALLOWED_HOSTS = ["*"]
 # ]
 
 # Database - SQLite for development (can be overridden with DATABASE_URL env var)
-if "DATABASE_URL" not in os.environ:  # noqa: F405
+if "DATABASE_URL" not in os.environ:
     DATABASES = {  # noqa: F405  # type: ignore[misc]
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
