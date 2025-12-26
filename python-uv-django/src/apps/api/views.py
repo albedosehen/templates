@@ -61,9 +61,9 @@ class TaskViewSet(viewsets.ModelViewSet):  # type: ignore[type-arg]
 
     @action(detail=True, methods=["post"])
     def start(self, request: Request, pk: int | None = None) -> Response:
-        """Mark a task as in progress."""
+        """Mark a task as in progress using service layer."""
         task = self.get_object()
-        task.mark_in_progress()
+        task = TaskService.start_task(task)
         serializer = self.get_serializer(task)
         return Response(serializer.data)
 
