@@ -105,7 +105,7 @@ This is a modern, minimal Python template designed for building applications and
 
 #### [Django 6.0+ Web Framework](python-uv-django/)
 
-A comprehensive [Django 6.0+](https://docs.djangoproject.com/en/6.0/releases/6.0/) template with REST API support, PostgreSQL, and Redis integration. This template is ideal for building robust web applications and APIs with Django. Supports earlier versions from Django `5.0+` onwards.
+A comprehensive [Django 6.0+](https://docs.djangoproject.com/en/6.0/releases/6.0/) template with REST API support, PostgreSQL, and Redis integration. This template is ideal for building robust web applications and APIs with Django. Supports earlier versions from Django `6.0+` onwards.
 
 **Features:**
 

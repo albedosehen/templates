@@ -36,13 +36,13 @@ This guide will help you quickly get started with the Azure Durable Functions te
 
 ### Step 1: Install Dependencies
 
-```bash
+```shell
 npm install
 ```
 
 ### Step 2: Start Storage Emulator
 
-```bash
+```shell
 docker-compose up -d
 ```
 
@@ -52,7 +52,7 @@ This starts Azurite (Azure Storage Emulator) which is required for Durable Funct
 
 Copy the template and rename:
 
-```bash
+```shell
 cp local.settings.json.template local.settings.json
 ```
 
@@ -60,7 +60,7 @@ No changes needed for local development!
 
 ### Step 4: Build & Run
 
-```bash
+```shell
 npm run build
 npm start
 ```
@@ -73,7 +73,7 @@ Wait for the message: `Functions: [multiple function names listed]`
 
 Start an orchestration:
 
-```bash
+```shell
 curl "http://localhost:7071/api/orchestrators/hello?name=Developer"
 ```
 
@@ -91,7 +91,7 @@ You'll get a response like:
 
 Check the status:
 
-```bash
+```shell
 # Copy the statusQueryGetUri from above response
 curl "http://localhost:7071/runtime/webhooks/durabletask/instances/abc123def456?..."
 ```
@@ -116,7 +116,7 @@ Response will show:
 
 ### Example 2: Parallel Processing (Fan-out/Fan-in)
 
-```bash
+```shell
 curl -X POST "http://localhost:7071/api/orchestrators/fanout"
 ```
 
@@ -132,7 +132,7 @@ Check status using the `statusQueryGetUri` from the response.
 
 Start an approval workflow:
 
-```bash
+```shell
 curl -X POST http://localhost:7071/api/orchestrators/approval \
   -H "Content-Type: application/json" \
   -d '{"purchaseOrder": "PO-12345", "amount": 5000}'
@@ -140,7 +140,7 @@ curl -X POST http://localhost:7071/api/orchestrators/approval \
 
 The orchestration is now waiting for approval. To approve:
 
-```bash
+```shell
 # Replace {instanceId} with the actual instance ID
 curl -X POST "http://localhost:7071/api/orchestrators/{instanceId}/raiseEvent?eventName=ApprovalEvent" \
   -H "Content-Type: application/json" \
@@ -153,7 +153,7 @@ To reject, send `false` instead of `true`.
 
 Start monitoring a job:
 
-```bash
+```shell
 curl "http://localhost:7071/api/orchestrators/monitor?jobId=job-789&maxRetries=15"
 ```
 
@@ -199,14 +199,17 @@ The Task Hub creates these Azure Storage resources:
 ### Why Use Different Task Hub Names?
 
 ```json
-// Development
-"hubName": "DevTaskHub"
+{
+   // Development
+   "hubName": "DevTaskHub",
 
-// Staging
-"hubName": "StagingTaskHub"
+   // Staging
+   "hubName": "StagingTaskHub",
 
-// Production
-"hubName": "ProdTaskHub"
+   // Production
+   "hubName": "ProdTaskHub"
+
+}
 ```
 
 Benefits:
@@ -227,7 +230,7 @@ Using Azure Storage Explorer or similar tool:
 
 ### 1. Function Chaining
 
-```
+```shell
 Activity A → Activity B → Activity C
 ```
 
@@ -241,7 +244,7 @@ Activity A → Activity B → Activity C
 
 ### 2. Fan-out/Fan-in
 
-```
+```shell
         ┌──→ Activity 1 ──┐
 Start ──┼──→ Activity 2 ──┼──→ Aggregate → End
         └──→ Activity 3 ──┘
@@ -257,7 +260,7 @@ Start ──┼──→ Activity 2 ──┼──→ Aggregate → End
 
 ### 3. Async HTTP APIs (Human Interaction)
 
-```
+```shell
 Start → Wait for Event → Process → End
         ↑
         External Signal
@@ -273,7 +276,7 @@ Start → Wait for Event → Process → End
 
 ### 4. Monitor
 
-```
+```shell
 Loop: Check Condition → Sleep → Repeat until Done
 ```
 
@@ -289,25 +292,25 @@ Loop: Check Condition → Sleep → Repeat until Done
 
 ### Check Orchestration Status
 
-```bash
+```shell
 curl "http://localhost:7071/api/orchestrators/{instanceId}"
 ```
 
 ### Terminate Running Orchestration
 
-```bash
+```shell
 curl -X POST "http://localhost:7071/api/orchestrators/{instanceId}/terminate?reason=Manual+stop"
 ```
 
 ### Clean Up Orchestration History
 
-```bash
+```shell
 curl -X DELETE "http://localhost:7071/api/orchestrators/{instanceId}/purge"
 ```
 
 ### Health Check
 
-```bash
+```shell
 curl "http://localhost:7071/api/health"
 ```
 
@@ -315,7 +318,7 @@ Shows all registered orchestrators and activities.
 
 ## Best Practices
 
-### ✅ DO
+### DO
 
 1. **Keep orchestrators deterministic**
    - Always use `context.df.currentUtcDateTime` instead of `new Date()`
@@ -334,25 +337,25 @@ Shows all registered orchestrators and activities.
    - Monitor for polling
    - Human interaction for approvals
 
-### ❌ DON'T
+### DON'T
 
 1. **Don't use random or non-deterministic operations in orchestrators**
 
    ```typescript
-   // ❌ Bad
+   // Bad
    const random = Math.random()
 
-   // ✅ Good - do it in an activity
+   // Good - do it in an activity
    const random = yield context.df.callActivity('generateRandom')
    ```
 
 2. **Don't perform I/O in orchestrators**
 
    ```typescript
-   // ❌ Bad
+   // Bad
    const data = await fetch('https://api.example.com')
 
-   // ✅ Good
+   // Good
    const data = yield context.df.callActivity('fetchFromApi')
    ```
 
@@ -452,7 +455,7 @@ app.http('myFunction', {
 
 **Fix**:
 
-```bash
+```shell
 docker-compose up -d
 docker-compose logs azurite
 ```
@@ -461,11 +464,11 @@ docker-compose logs azurite
 
 You now have a complete Durable Functions project with:
 
-- ✅ **4 Orchestration Patterns**: Chaining, Fan-out/Fan-in, Human Interaction, Monitor
-- ✅ **7 Activity Functions**: Ready to use and customize
-- ✅ **Task Hub Configuration**: Properly configured for local and production
-- ✅ **HTTP Endpoints**: For starting and managing orchestrations
-- ✅ **Tests**: Example unit tests for orchestrators and activities
-- ✅ **Docker Support**: Local storage emulation with Azurite
+- **4 Orchestration Patterns**: Chaining, Fan-out/Fan-in, Human Interaction, Monitor
+- **7 Activity Functions**: Ready to use and customize
+- **Task Hub Configuration**: Properly configured for local and production
+- **HTTP Endpoints**: For starting and managing orchestrations
+- **Tests**: Example unit tests for orchestrators and activities
+- **Docker Support**: Local storage emulation with Azurite
 
-Happy orchestrating! 🎉
+Follow the best practices outlined to build secure, maintainable Azure Durable Functions applications. Happy coding!

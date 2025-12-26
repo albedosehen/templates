@@ -1,12 +1,12 @@
 # Python UV Django Template
 
-A comprehensive Django 5.0+ template using [uv](https://github.com/astral-sh/uv) for blazingly fast package management, with Django REST Framework for building powerful APIs. This template follows Django best practices and includes comprehensive tooling for development, testing, and deployment.
+A comprehensive Django 6.0+ template using [uv](https://github.com/astral-sh/uv) for blazingly fast package management, with Django REST Framework for building powerful APIs. This template follows Django best practices and includes comprehensive tooling for development, testing, and deployment.
 
 ## Features
 
 - **Fast Package Management**: Uses uv for lightning-fast dependency resolution and installation
 - **Modern Python**: Built for Python 3.12 with modern features and type hints
-- **Django 5.0+**: Latest Django with all modern features
+- **Django 6.0+**: Latest Django with all modern features
 - **REST API**: Django REST Framework pre-configured with ViewSets and serializers
 - **Services/Selectors Pattern**: Clean architecture with separated business logic and query layers
 - **PostgreSQL Ready**: Production-ready database configuration
@@ -38,7 +38,7 @@ powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
 
 ## Quick Start
 
-See [`QUICKSTART.md`](python-uv-django/QUICKSTART.md) for a detailed getting started guide.
+See [`QUICKSTART.md`](./QUICKSTART.md) for a detailed getting started guide.
 
 ### TL;DR
 
@@ -135,11 +135,11 @@ python-uv-django/
 
 This template follows Django best practices with a **services/selectors pattern** for clean architecture:
 
-- **Models** ([`models.py`](python-uv-django/src/apps/core/models.py)): Django ORM models only, minimal business logic
-- **Selectors** ([`selectors.py`](python-uv-django/src/apps/core/selectors.py)): Query layer - functions that fetch data from the database
-- **Services** ([`services.py`](python-uv-django/src/apps/core/services.py)): Business logic layer - functions that modify data or perform actions
+- **Models** ([`models.py`](./src/apps/core/models.py)): Django ORM models only, minimal business logic
+- **Selectors** ([`selectors.py`](./src/apps/core/selectors.py)): Query layer - functions that fetch data from the database
+- **Services** ([`services.py`](./src/apps/core/services.py)): Business logic layer - functions that modify data or perform actions
 - **Views**: Thin layer that calls services/selectors and returns responses
-- **Common** ([`common/`](python-uv-django/src/common/)): Shared utilities like abstract base models
+- **Common** ([`common/`](./src/common/)): Shared utilities like abstract base models
 
 This separation makes code easier to test, reuse, and maintain.
 
@@ -228,7 +228,7 @@ This template implements a clean architecture pattern that separates concerns:
 
 Selectors are functions that **fetch data** from the database. They should be pure query functions with no side effects.
 
-**Example** ([`src/apps/core/selectors.py`](python-uv-django/src/apps/core/selectors.py)):
+**Example** ([`src/apps/core/selectors.py`](./src/apps/core/selectors.py)):
 
 ```python
 from django.db.models import QuerySet
@@ -261,7 +261,7 @@ class TaskSelector:
 
 Services are functions that **perform actions** or **modify data**. They contain business logic and orchestrate operations.
 
-**Example** ([`src/apps/core/services.py`](python-uv-django/src/apps/core/services.py)):
+**Example** ([`src/apps/core/services.py`](./src/apps/core/services.py)):
 
 ```python
 from apps.core.models import Task
@@ -728,7 +728,7 @@ python src/manage.py runserver 8001
 
 ### Getting Help
 
-- Check the [QUICKSTART.md](python-uv-django/QUICKSTART.md) guide
+- Check the [QUICKSTART.md](./QUICKSTART.md) guide
 - Review Django documentation: <https://docs.djangoproject.com/>
 - Check DRF documentation: <https://www.django-rest-framework.org/>
 - Review uv documentation: <https://github.com/astral-sh/uv>
@@ -762,4 +762,4 @@ python src/manage.py runserver 8001
 
 ---
 
-Built with ❤️ using Django 5.0+ and [uv](https://github.com/astral-sh/uv)
+Built with ❤️ using Django 6.0+ and [uv](https://github.com/astral-sh/uv)
