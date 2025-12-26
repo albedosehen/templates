@@ -1,10 +1,9 @@
 """Tests for API endpoints."""
 
-from datetime import timedelta
 
 import pytest
+
 from django.urls import reverse
-from django.utils import timezone
 from rest_framework import status
 
 from apps.core.models import Task
@@ -113,12 +112,12 @@ class TestTaskAPI:
 
         assert response.status_code == status.HTTP_200_OK
         assert len(response.data) == 2
-        
+
         # Verify only pending tasks are returned
         returned_ids = [task["id"] for task in response.data]
         assert pending_task_1.id in returned_ids
         assert pending_task_2.id in returned_ids
-        
+
         # Verify all returned tasks have pending status
         for task_data in response.data:
             assert task_data["status"] == Task.Status.PENDING
