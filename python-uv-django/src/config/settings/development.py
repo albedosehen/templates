@@ -1,5 +1,7 @@
 """Development settings for Django project."""
 
+import os
+
 from .base import *  # noqa: F403
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -14,11 +16,11 @@ ALLOWED_HOSTS = ["*"]
 # ]
 
 # Database - SQLite for development (can be overridden with DATABASE_URL env var)
-if "DATABASE_URL" not in os.environ:  # noqa: F405
-    DATABASES = {  # noqa: F405
+if "DATABASE_URL" not in os.environ:
+    DATABASES = {  # noqa: F405  # type: ignore[misc]
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",  # noqa: F405
+            "NAME": str(BASE_DIR / "db.sqlite3"),  # noqa: F405
         }
     }
 
@@ -37,6 +39,6 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
 
 # More verbose logging in development
-LOGGING["root"]["level"] = "DEBUG"  # noqa: F405
-LOGGING["loggers"]["django"]["level"] = "DEBUG"  # noqa: F405
-LOGGING["loggers"]["apps"]["level"] = "DEBUG"  # noqa: F405
+LOGGING["root"]["level"] = "DEBUG"  # noqa: F405  # type: ignore[index]
+LOGGING["loggers"]["django"]["level"] = "DEBUG"  # noqa: F405  # type: ignore[index]
+LOGGING["loggers"]["apps"]["level"] = "DEBUG"  # noqa: F405  # type: ignore[index]
