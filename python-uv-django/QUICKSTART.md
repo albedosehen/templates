@@ -1,6 +1,6 @@
 # Django Quick Start Guide
 
-This guide will help you quickly get started with the Django 5.0+ template using uv for package management.
+This guide will help you quickly get started with the Django 6.0+ template using uv for package management.
 
 ## What is Django?
 
@@ -9,21 +9,25 @@ This guide will help you quickly get started with the Django 5.0+ template using
 ### Key Components
 
 #### 1. **Models**
+
 - Define your data structure
 - ORM (Object-Relational Mapping) for database operations
 - Automatic database migrations
 
 #### 2. **Views**
+
 - Handle requests and return responses
 - Process business logic
 - Can be function-based or class-based
 
 #### 3. **URLs**
+
 - Route URLs to views
 - Support for path parameters and query strings
 - Named URL patterns for reverse resolution
 
 #### 4. **Django REST Framework**
+
 - Build powerful Web APIs
 - Serializers for converting Python objects to JSON
 - ViewSets for RESTful endpoints
@@ -32,7 +36,7 @@ This guide will help you quickly get started with the Django 5.0+ template using
 
 ### Step 1: Install uv
 
-```bash
+```shell
 # On macOS and Linux
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
@@ -42,14 +46,14 @@ powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
 
 ### Step 2: Create Virtual Environment
 
-```bash
+```shell
 cd python-uv-django
 uv venv
 ```
 
 Activate the virtual environment:
 
-```bash
+```shell
 # On macOS/Linux
 source .venv/bin/activate
 
@@ -59,7 +63,7 @@ source .venv/bin/activate
 
 ### Step 3: Install Dependencies
 
-```bash
+```shell
 uv pip install -e ".[dev]"
 ```
 
@@ -67,7 +71,7 @@ uv pip install -e ".[dev]"
 
 Copy the example environment file:
 
-```bash
+```shell
 cp .env.example .env
 ```
 
@@ -81,13 +85,13 @@ DATABASE_URL=sqlite:///db.sqlite3
 
 ### Step 5: Run Migrations
 
-```bash
+```shell
 python src/manage.py migrate
 ```
 
 ### Step 6: Create Superuser
 
-```bash
+```shell
 python src/manage.py createsuperuser
 ```
 
@@ -95,7 +99,7 @@ Follow the prompts to create an admin account.
 
 ### Step 7: Start Development Server
 
-```bash
+```shell
 python src/manage.py runserver
 ```
 
@@ -115,11 +119,12 @@ The template includes a complete REST API for Task management:
 
 #### List all tasks
 
-```bash
+```shell
 curl http://localhost:8000/api/tasks/
 ```
 
 Response:
+
 ```json
 {
   "count": 3,
@@ -144,7 +149,7 @@ Response:
 
 #### Create a new task
 
-```bash
+```shell
 curl -X POST http://localhost:8000/api/tasks/ \
   -H "Content-Type: application/json" \
   -d '{
@@ -156,13 +161,13 @@ curl -X POST http://localhost:8000/api/tasks/ \
 
 #### Get task details
 
-```bash
+```shell
 curl http://localhost:8000/api/tasks/1/
 ```
 
 #### Update a task
 
-```bash
+```shell
 curl -X PATCH http://localhost:8000/api/tasks/1/ \
   -H "Content-Type: application/json" \
   -d '{"status": "IN_PROGRESS"}'
@@ -170,23 +175,24 @@ curl -X PATCH http://localhost:8000/api/tasks/1/ \
 
 #### Complete a task
 
-```bash
+```shell
 curl -X POST http://localhost:8000/api/tasks/1/complete/
 ```
 
 #### Start a task
 
-```bash
+```shell
 curl -X POST http://localhost:8000/api/tasks/1/start/
 ```
 
 #### Get statistics
 
-```bash
+```shell
 curl http://localhost:8000/api/tasks/statistics/
 ```
 
 Response:
+
 ```json
 {
   "total": 10,
@@ -199,7 +205,7 @@ Response:
 
 #### Filter tasks
 
-```bash
+```shell
 # By status
 curl "http://localhost:8000/api/tasks/?status=COMPLETED"
 
@@ -219,7 +225,7 @@ curl "http://localhost:8000/api/tasks/?ordering=-priority"
 
 Start all services (Django, PostgreSQL, Redis):
 
-```bash
+```shell
 docker-compose up
 ```
 
@@ -227,13 +233,13 @@ The application will be available at [http://localhost:8000](http://localhost:80
 
 Run migrations in Docker:
 
-```bash
+```shell
 docker-compose exec web python src/manage.py migrate
 ```
 
 Create superuser in Docker:
 
-```bash
+```shell
 docker-compose exec web python src/manage.py createsuperuser
 ```
 
@@ -241,13 +247,13 @@ docker-compose exec web python src/manage.py createsuperuser
 
 Build production image:
 
-```bash
+```shell
 docker build --target production -t django-app:latest .
 ```
 
 Build development image:
 
-```bash
+```shell
 docker build --target development -t django-app:dev .
 ```
 
@@ -255,7 +261,7 @@ docker build --target development -t django-app:dev .
 
 ### Database Operations
 
-```bash
+```shell
 # Create migrations for model changes
 python src/manage.py makemigrations
 
@@ -271,7 +277,7 @@ python src/manage.py startapp myapp
 
 ### Data Management
 
-```bash
+```shell
 # Create superuser
 python src/manage.py createsuperuser
 
@@ -287,7 +293,7 @@ python src/manage.py shell
 
 ### Development
 
-```bash
+```shell
 # Run development server
 python src/manage.py runserver
 
@@ -308,19 +314,19 @@ python src/manage.py check
 
 ### Run All Tests
 
-```bash
+```shell
 uv run pytest
 ```
 
 ### Run with Coverage
 
-```bash
+```shell
 uv run pytest --cov=src --cov-report=term-missing
 ```
 
 ### Run Specific Tests
 
-```bash
+```shell
 # Test a specific file
 uv run pytest tests/apps/core/test_models.py
 
@@ -333,7 +339,7 @@ uv run pytest tests/apps/core/test_models.py::TestTaskModel::test_create_task
 
 ### Run in Watch Mode
 
-```bash
+```shell
 uv run pytest-watch
 ```
 
@@ -341,7 +347,7 @@ uv run pytest-watch
 
 ### Linting
 
-```bash
+```shell
 # Check for issues
 uv run ruff check .
 
@@ -351,7 +357,7 @@ uv run ruff check --fix .
 
 ### Formatting
 
-```bash
+```shell
 # Format code
 uv run black .
 
@@ -361,13 +367,13 @@ uv run black --check .
 
 ### Type Checking
 
-```bash
+```shell
 uv run mypy src
 ```
 
 ### Run All Checks
 
-```bash
+```shell
 uv run ruff check . && \
 uv run black --check . && \
 uv run mypy src && \
@@ -376,7 +382,7 @@ uv run pytest --cov=src
 
 ## Project Structure
 
-```
+```shell
 python-uv-django/
 ├── src/                           # Application source code
 │   ├── manage.py                  # Django management script
@@ -415,15 +421,17 @@ python-uv-django/
 
 ## Best Practices
 
-### ✅ DO
+### DO
 
 1. **Use migrations for all model changes**
-   ```bash
+
+   ```shell
    python src/manage.py makemigrations
    python src/manage.py migrate
    ```
 
 2. **Keep secrets in environment variables**
+
    ```python
    SECRET_KEY = os.getenv("SECRET_KEY")
    ```
@@ -434,6 +442,7 @@ python-uv-django/
    - XSS protection (template auto-escaping)
 
 4. **Write tests for your code**
+
    ```python
    @pytest.mark.django_db
    def test_task_creation(task_factory):
@@ -442,33 +451,37 @@ python-uv-django/
    ```
 
 5. **Use Django's timezone-aware datetime**
+
    ```python
    from django.utils import timezone
    task.completed_at = timezone.now()
    ```
 
-### ❌ DON'T
+### DON'T
 
 1. **Don't commit sensitive data**
    - Keep `.env` out of version control
    - Use `.env.example` as template
 
 2. **Don't run with DEBUG=True in production**
+
    ```python
    # production.py
    DEBUG = False
    ```
 
 3. **Don't use raw SQL without good reason**
+
    ```python
-   # ❌ Avoid
+   # Avoid
    cursor.execute("SELECT * FROM tasks")
-   
-   # ✅ Prefer
+
+   # Prefer
    Task.objects.all()
    ```
 
 4. **Don't forget to set ALLOWED_HOSTS in production**
+
    ```python
    ALLOWED_HOSTS = ['example.com', 'www.example.com']
    ```
@@ -494,7 +507,8 @@ python-uv-django/
 **Cause**: Virtual environment not activated or dependencies not installed
 
 **Fix**:
-```bash
+
+```shell
 source .venv/bin/activate  # or .venv\Scripts\activate on Windows
 uv pip install -e ".[dev]"
 ```
@@ -504,7 +518,8 @@ uv pip install -e ".[dev]"
 **Cause**: Migrations not applied
 
 **Fix**:
-```bash
+
+```shell
 python src/manage.py migrate
 ```
 
@@ -513,7 +528,8 @@ python src/manage.py migrate
 **Cause**: CSRF protection blocking POST request
 
 **Fix**: For API requests, use Django's CSRF exemption or include CSRF token. For testing:
-```bash
+
+```shell
 # Include CSRF token in cookie
 curl -X POST http://localhost:8000/api/tasks/ \
   -H "X-CSRFToken: your-token-here" \
@@ -526,7 +542,8 @@ curl -X POST http://localhost:8000/api/tasks/ \
 **Cause**: Another process using port 8000
 
 **Fix**:
-```bash
+
+```shell
 # Run on different port
 python src/manage.py runserver 8001
 
@@ -546,7 +563,8 @@ taskkill /PID <PID> /F
    - Run `makemigrations` and `migrate`
 
 2. **Add your own apps**
-   ```bash
+
+   ```shell
    cd src
    python manage.py startapp myapp
    ```
@@ -574,12 +592,12 @@ taskkill /PID <PID> /F
 
 You now have a complete Django project with:
 
-- ✅ **Django 5.0+**: Latest stable version
-- ✅ **REST API**: Fully functional with Django REST Framework
-- ✅ **Database**: PostgreSQL support with SQLite for development
-- ✅ **Testing**: Comprehensive test suite with pytest
-- ✅ **Docker**: Multi-service setup with PostgreSQL and Redis
-- ✅ **Code Quality**: Linting, formatting, type checking
-- ✅ **CI/CD**: GitHub Actions workflow
+- **Django 6.0+**: Latest stable version
+- **REST API**: Fully functional with Django REST Framework
+- **Database**: PostgreSQL support with SQLite for development
+- **Testing**: Comprehensive test suite with pytest
+- **Docker**: Multi-service setup with PostgreSQL and Redis
+- **Code Quality**: Linting, formatting, type checking
+- **CI/CD**: GitHub Actions workflow
 
-Happy coding! 🚀
+Follow the best practices outlined to build secure, maintainable Django applications. Happy coding!

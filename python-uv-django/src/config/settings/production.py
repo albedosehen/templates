@@ -40,12 +40,12 @@ if not CORS_ALLOWED_ORIGINS:  # noqa: F405
     raise ValueError("CORS_ALLOWED_ORIGINS must be configured in production")
 
 # Logging - Less verbose in production
-LOGGING["root"]["level"] = "WARNING"  # noqa: F405
-LOGGING["loggers"]["django"]["level"] = "WARNING"  # noqa: F405
-LOGGING["loggers"]["apps"]["level"] = "INFO"  # noqa: F405
+LOGGING["root"]["level"] = "WARNING"  # noqa: F405  # type: ignore[index]
+LOGGING["loggers"]["django"]["level"] = "WARNING"  # noqa: F405  # type: ignore[index]
+LOGGING["loggers"]["apps"]["level"] = "INFO"  # noqa: F405  # type: ignore[index]
 
 # Add file-based logging in production
-LOGGING["handlers"]["file"] = {  # noqa: F405
+LOGGING["handlers"]["file"] = {  # noqa: F405  # type: ignore[index]
     "class": "logging.handlers.RotatingFileHandler",
     "filename": BASE_DIR / "logs" / "django.log",  # noqa: F405
     "maxBytes": 1024 * 1024 * 15,  # 15MB
@@ -53,6 +53,6 @@ LOGGING["handlers"]["file"] = {  # noqa: F405
     "formatter": "verbose",
 }
 
-LOGGING["root"]["handlers"].append("file")  # noqa: F405
-LOGGING["loggers"]["django"]["handlers"].append("file")  # noqa: F405
-LOGGING["loggers"]["apps"]["handlers"].append("file")  # noqa: F405
+LOGGING["root"]["handlers"].append("file")  # noqa: F405  # type: ignore[index]
+LOGGING["loggers"]["django"]["handlers"].append("file")  # noqa: F405  # type: ignore[index]
+LOGGING["loggers"]["apps"]["handlers"].append("file")  # noqa: F405  # type: ignore[index]

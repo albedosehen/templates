@@ -6,11 +6,12 @@ A modern Python 3.12 template using [uv](https://github.com/astral-sh/uv) for bl
 
 - **Fast Package Management**: Uses uv for lightning-fast dependency resolution and installation
 - **Modern Python**: Built for Python 3.12 with modern features and type hints
+- **Modern Pydantic V2**: Uses Pydantic BaseSettings for type-safe configuration
 - **Testing**: Comprehensive test suite with pytest and coverage reporting
 - **Code Quality**: Integrated linting (ruff), formatting (black), and type checking (mypy)
 - **Docker Support**: Multi-stage Dockerfile for both development and production
 - **CI/CD**: GitHub Actions workflow for automated testing and building
-- **Clean Architecture**: Well-organized project structure with separation of concerns
+- **Flat Package Structure**: No unnecessary subdirectories, Python-first approach
 
 ## Prerequisites
 
@@ -89,7 +90,7 @@ uv run pytest-watch
 Run specific test file:
 
 ```bash
-uv run pytest tests/config/test_config.py
+uv run pytest tests/test_settings.py
 ```
 
 ### Code Quality
@@ -199,18 +200,13 @@ python-uv-simple/
 │   └── workflows/
 │       └── ci.yml              # GitHub Actions CI/CD pipeline
 ├── src/
-│   ├── __init__.py             # Package initialization
-│   ├── __main__.py             # Entry point for python -m src
-│   ├── config/
-│   │   └── __init__.py         # Configuration management
-│   ├── types/
-│   │   └── __init__.py         # Type definitions and protocols
-│   └── utils/
-│       └── logger.py           # Logging utility
+│   └── python_uv_simple/       # Importable package
+│       ├── __init__.py         # Package initialization
+│       ├── __main__.py         # Entry point for python -m python_uv_simple
+│       └── settings.py         # Pydantic BaseSettings configuration
 ├── tests/
 │   ├── __init__.py
-│   └── config/
-│       └── test_config.py      # Configuration tests
+│   └── test_settings.py        # Settings tests
 ├── .dockerignore               # Docker ignore patterns
 ├── .gitignore                  # Git ignore patterns
 ├── .python-version             # Python version specification
@@ -222,12 +218,12 @@ python-uv-simple/
 
 ### Key Directories
 
-- **`src/`**: Main application source code
-  - **`config/`**: Configuration management and environment variables
-  - **`types/`**: Type definitions, protocols, and type aliases
-  - **`utils/`**: Utility functions and helper classes
+- **`src/python_uv_simple/`**: Main application package
+  - Importable as `python_uv_simple`
+  - Uses Pydantic BaseSettings for configuration
+  - Uses Python stdlib logging directly
 
-- **`tests/`**: Test suite mirroring the src/ structure
+- **`tests/`**: Test suite mirroring the package structure
   - Tests are organized to match the source code structure
   - Use pytest for all testing
 
@@ -240,7 +236,7 @@ ENVIRONMENT=development          # Options: development, staging, production
 DEBUG=true                       # Enable debug mode
 LOG_LEVEL=DEBUG                  # Options: DEBUG, INFO, WARNING, ERROR, CRITICAL
 APP_NAME=python-uv-simple
-APP_VERSION=0.1.0
+VERSION=0.1.0
 ```
 
 ### Configuration Options
@@ -251,7 +247,7 @@ APP_VERSION=0.1.0
 | `DEBUG` | `true` | Enable debug mode |
 | `LOG_LEVEL` | `INFO` | Logging level |
 | `APP_NAME` | `python-uv-simple` | Application name |
-| `APP_VERSION` | `0.1.0` | Application version |
+| `VERSION` | `0.1.0` | Application version |
 
 ## Development Guidelines
 
