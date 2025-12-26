@@ -1,6 +1,5 @@
 """Tests for API endpoints."""
 
-
 import pytest
 
 from django.urls import reverse
