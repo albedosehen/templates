@@ -3,7 +3,7 @@
 import logging
 import sys
 
-from python_uv_simple.settings import get_settings
+from src.settings import get_settings
 
 
 def setup_logging() -> None:
