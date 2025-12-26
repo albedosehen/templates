@@ -18,7 +18,7 @@ A foundational template for TypeScript/Node.js applications with essential tooli
 
 **Features:**
 
-- Node.js 24 LTS with TypeScript
+- Node.js 22 LTS with TypeScript
 - Jest for testing
 - ESLint + Prettier for code quality
 - Docker support with multi-stage builds
