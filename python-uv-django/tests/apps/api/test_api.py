@@ -97,6 +97,30 @@ class TestTaskAPI:
         sample_task.refresh_from_db()
         assert sample_task.status == Task.Status.IN_PROGRESS
 
+    def test_pending_action(self, api_client, task_factory):
+        """Test the pending action."""
+        # Create a mix of pending and non-pending tasks
+        pending_task_1 = task_factory(title="Pending Task 1", status=Task.Status.PENDING)
+        pending_task_2 = task_factory(title="Pending Task 2", status=Task.Status.PENDING)
+        task_factory(title="In Progress Task", status=Task.Status.IN_PROGRESS)
+        task_factory(title="Completed Task", status=Task.Status.COMPLETED)
+        task_factory(title="Cancelled Task", status=Task.Status.CANCELLED)
+
+        url = reverse("api:task-pending")
+        response = api_client.get(url)
+
+        assert response.status_code == status.HTTP_200_OK
+        assert len(response.data) == 2
+        
+        # Verify only pending tasks are returned
+        returned_ids = [task["id"] for task in response.data]
+        assert pending_task_1.id in returned_ids
+        assert pending_task_2.id in returned_ids
+        
+        # Verify all returned tasks have pending status
+        for task_data in response.data:
+            assert task_data["status"] == Task.Status.PENDING
+
     def test_statistics_action(self, api_client, multiple_tasks):
         """Test the statistics action."""
         url = reverse("api:task-statistics")
