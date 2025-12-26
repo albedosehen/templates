@@ -11,8 +11,6 @@ from django.utils.html import format_html
 
 if TYPE_CHECKING:
     from .models import Task
-else:
-    from .models import Task
 
 
 @admin.register(Task)

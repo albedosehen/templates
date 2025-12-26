@@ -19,7 +19,6 @@ class TaskService:
     def complete_task(task: Task) -> Task:
         """Mark task as completed."""
         task.mark_completed()
-        task.save()
         return task
 
     @staticmethod
