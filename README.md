@@ -1,88 +1,101 @@
 # Project Templates
 
-A curated collection of production-ready project templates for TypeScript and Python applications. Each template includes modern tooling, comprehensive testing, Docker support, and CI/CD pipelines.
+A finely crafted collection of professionally opinionated templates for various programming languages and frameworks. Each template includes modern tooling, comprehensive testing, Docker support, and CI/CD pipelines.
+
+These templates aim to provide a solid foundation for new projects, ensuring best practices and developer productivity from the start.
 
 ## Available Templates
 
-### TypeScript Templates
+### NodeJS Templates
 
-#### [typescript-node-simple](typescript-node-simple/)
-**Basic TypeScript/Node.js Project**
+- [typescript-node-simple](typescript-node-simple/)
+- [typescript-node-azfunc-v4](typescript-node-azfunc-v4/)
+- [typescript-node-azfunc-v4-durable](typescript-node-azfunc-v4-durable/)
 
-A foundational template for TypeScript/Node.js applications with essential tooling and best practices.
+#### [Basic TypeScript/Node.js Project](typescript-node-simple/)
 
-**Key Features:**
-- Node.js 20 LTS with TypeScript
+A foundational template for TypeScript/Node.js applications with essential tooling and best practices. You can easily add dependencies and expand upon this base for various project needs.
+
+**Features:**
+
+- Node.js 24 LTS with TypeScript
 - Jest for testing
 - ESLint + Prettier for code quality
 - Docker support with multi-stage builds
 - GitHub Actions CI/CD
 
-**When to Use:**
+**Usage:**
+
 - Starting a new Node.js application
 - Building CLI tools or libraries
 - Need a clean, minimal TypeScript setup
 
 ---
 
-#### [typescript-node-azfunc-v4](typescript-node-azfunc-v4/)
-**Azure Functions v4 Project**
+#### [Azure Functions v4 Project](typescript-node-azfunc-v4/)
 
-A template for serverless Azure Functions using the v4 programming model with TypeScript.
+This template builds upon the `typescript-node-simple` template for serverless Azure Functions using the `v4` programming model with TypeScript.
 
-**Key Features:**
-- Azure Functions v4 programming model
-- HTTP triggers with routing
-- All features from typescript-node-simple
+**Features:**
+
+- Everything from `typescript-node-simple`
+- Azure Functions v4
 - Azure Functions Core Tools integration
+- Example HTTP triggers with routing
 - Production-ready configuration
 
-**When to Use:**
-- Building serverless APIs
-- Event-driven microservices
+**Usage:**
+
+- Building serverless APIs (REST, GraphQL, etc.)
+- Event-driven microservices (queues, triggers, timers, etc.)
 - Azure cloud-native applications
-- Need serverless compute on Azure
+- Webhooks and Azure integrations
 
 ---
 
-#### [typescript-node-azfunc-v4-durable](typescript-node-azfunc-v4-durable/)
-**Azure Functions v4 with Durable Functions**
+#### [Azure Functions v4 with Durable Functions](typescript-node-azfunc-v4-durable/)
 
-An advanced template featuring Azure Durable Functions for complex, stateful serverless workflows.
+An advanced template featuring Azure Durable Functions for complex, stateful serverless workflows. This builds upon the `typescript-node-azfunc-v4` template with added support and configuration for Durable Functions and features a concrete implementation to build upon.
 
-**Key Features:**
+**Features:**
+
+- All features from `typescript-node-azfunc-v4`
 - Durable Functions orchestration patterns
 - Function chaining and fan-out/fan-in
 - Human interaction pattern examples
 - Activity functions and orchestrators
 - Comprehensive testing for orchestrations
-- All features from typescript-node-azfunc-v4
 
-**When to Use:**
+**Usage:**
+
 - Complex, long-running workflows
 - Stateful serverless applications
-- Multi-step business processes
-- Saga pattern implementations
-- Need reliability with automatic retries
+- Multi-step business processes (approval flows, data processing pipelines)
+- Saga pattern implementations (distributed transactions)
+- Need reliability with automatic retries and state management
 
 ---
 
 ### Python Templates
 
-#### [python-uv-simple](python-uv-simple/)
-**Modern Python Project with uv**
+- [python-uv-simple](python-uv-simple/)
+- [python-uv-django](python-uv-django/)
 
-A modern Python 3.12 template using [uv](https://github.com/astral-sh/uv) for blazingly fast package management.
+#### [Basic Python Project](python-uv-simple/)
 
-**Key Features:**
-- Python 3.12 with modern type hints
-- uv for ultra-fast dependency management
-- pytest with coverage reporting
-- ruff (linting) + black (formatting) + mypy (type checking)
+This is a modern, minimal Python template designed for building applications and libraries with best practices in mind. It uses [uv](https://github.com/astral-sh/uv) for fast dependency management and targets Python `3.12`.
+
+**Features:**
+
+- Python `3.12` with modern type hints
+- `uv` for ultra-fast dependency management
+- `pytest` with coverage reporting
+- `ruff` (linting) + `black` (formatting) + `mypy` (type checking)
 - Docker support with multi-stage builds
 - GitHub Actions CI/CD
 
-**When to Use:**
+**Usage:**
+
 - Starting a new Python application
 - Building CLI tools or libraries
 - Need modern Python development setup
@@ -90,22 +103,25 @@ A modern Python 3.12 template using [uv](https://github.com/astral-sh/uv) for bl
 
 ---
 
-#### [python-uv-django](python-uv-django/)
-**Django 5.0+ Web Framework**
+#### [Django 6.0+ Web Framework](python-uv-django/)
 
-A comprehensive Django 5.0+ template with REST API support, PostgreSQL, and Redis integration.
+A comprehensive [Django 6.0+](https://docs.djangoproject.com/en/6.0/releases/6.0/) template with REST API support, PostgreSQL, and Redis integration. This template is ideal for building robust web applications and APIs with Django. Supports earlier versions from Django `5.0+` onwards.
 
-**Key Features:**
-- Django 5.0+ with Django REST Framework
+**Features:**
+
+- `uv` for ultra-fast dependency management
+- `pytest` with coverage reporting
+- `ruff` (linting) + `black` (formatting) + `mypy` (type checking)
+- `pytest-django` with `factory-boy` for testing
+- Django `6.0+` with Django REST Framework
 - PostgreSQL and Redis support
 - Environment-based settings (dev/prod)
 - Task management API with full CRUD
-- pytest-django with factory-boy
-- All code quality tools from python-uv-simple
 - Docker Compose with PostgreSQL + Redis
 - QUICKSTART.md guide included
 
-**When to Use:**
+**Usage:**
+
 - Building web applications and APIs
 - Need database-backed applications
 - RESTful API services
@@ -114,70 +130,20 @@ A comprehensive Django 5.0+ template with REST API support, PostgreSQL, and Redi
 
 ---
 
-## Template Progression
-
-### TypeScript Track
-
-```
-typescript-node-simple
-    ↓
-    Basic Node.js app with TypeScript, testing, and Docker
-    
-typescript-node-azfunc-v4
-    ↓
-    + Azure Functions v4 runtime
-    + Serverless HTTP triggers
-    + Azure cloud integration
-    
-typescript-node-azfunc-v4-durable
-    ↓
-    + Durable Functions framework
-    + Orchestration patterns
-    + Stateful workflows
-```
-
-### Python Track
-
-```
-python-uv-simple
-    ↓
-    Modern Python app with uv, testing, and Docker
-    
-python-uv-django
-    ↓
-    + Django 5.0+ web framework
-    + Django REST Framework
-    + PostgreSQL + Redis
-    + Multi-app architecture
-```
-
----
-
-## Comparison Table
-
-| Template | Language | Complexity | Docker | Database | Key Use Case |
-|----------|----------|------------|--------|----------|--------------|
-| **typescript-node-simple** | TypeScript | ⭐ Basic | ✅ | ❌ | CLI tools, libraries, basic apps |
-| **typescript-node-azfunc-v4** | TypeScript | ⭐⭐ Intermediate | ✅ | ❌ | Serverless APIs, webhooks |
-| **typescript-node-azfunc-v4-durable** | TypeScript | ⭐⭐⭐ Advanced | ✅ | ❌ | Workflows, orchestrations, sagas |
-| **python-uv-simple** | Python | ⭐ Basic | ✅ | ❌ | CLI tools, libraries, basic apps |
-| **python-uv-django** | Python | ⭐⭐⭐ Advanced | ✅ | ✅ PostgreSQL + Redis | Web apps, REST APIs, admin interfaces |
-
----
-
 ## Prerequisites
 
-### TypeScript Templates
-- Node.js 20 LTS
-- npm or yarn
+### NodeJS TypeScript Template Requirements
+
+- Node.js 24 LTS
+- npm
 - Docker (optional)
 - Azure Functions Core Tools (for Azure Functions templates)
 
-### Python Templates
+### Python Template Requirements
+
 - Python 3.12 or higher
 - [uv](https://github.com/astral-sh/uv) package manager
 - Docker (optional)
-- PostgreSQL (optional, for Django template)
 
 ### Installing uv (Python Templates)
 
@@ -245,6 +211,7 @@ uv pip install -e ".[dev]"
 ### Examples
 
 **TypeScript - Azure Functions:**
+
 ```bash
 npx tiged albedosehen/templates/typescript-node-azfunc-v4 my-api
 cd my-api
@@ -253,6 +220,7 @@ npm start
 ```
 
 **Python - Django:**
+
 ```bash
 npx tiged albedosehen/templates/python-uv-django my-webapp
 cd my-webapp
@@ -270,55 +238,13 @@ python src/manage.py runserver
 
 All templates include:
 
-- 📝 **Comprehensive README** - Detailed documentation for each template
-- 🧪 **Testing Setup** - Jest (TypeScript) or pytest (Python) with examples
-- 🔍 **Code Quality** - Linting, formatting, and type checking
-- 🐳 **Docker Support** - Multi-stage Dockerfiles for dev and production
-- 🔄 **CI/CD Pipeline** - GitHub Actions workflows
-- 📁 **Project Structure** - Organized, scalable architecture
-- 🛠️ **Development Tools** - Hot reloading, debugging support
-
----
-
-## Template Details
-
-### TypeScript Templates
-
-All TypeScript templates share:
-- **Language**: TypeScript with strict type checking
-- **Testing**: Jest with coverage reporting
-- **Code Quality**: ESLint + Prettier
-- **Package Manager**: npm
-- **Docker**: Multi-stage builds (development + production)
-- **CI/CD**: GitHub Actions
-
-### Python Templates
-
-All Python templates share:
-- **Language**: Python 3.12 with type hints
-- **Package Manager**: uv (ultra-fast)
-- **Testing**: pytest with coverage
-- **Code Quality**: ruff (linting) + black (formatting) + mypy (type checking)
-- **Docker**: Multi-stage builds (development + production)
-- **CI/CD**: GitHub Actions
-
----
-
-## Quick Start by Use Case
-
-**Building a REST API?**
-- TypeScript: Consider [`typescript-node-azfunc-v4`](typescript-node-azfunc-v4/) for serverless
-- Python: Choose [`python-uv-django`](python-uv-django/) for full-featured web framework
-
-**Need a CLI tool?**
-- TypeScript: Use [`typescript-node-simple`](typescript-node-simple/)
-- Python: Use [`python-uv-simple`](python-uv-simple/)
-
-**Complex workflows with state?**
-- TypeScript: Use [`typescript-node-azfunc-v4-durable`](typescript-node-azfunc-v4-durable/)
-
-**Building a web app with admin panel?**
-- Python: Use [`python-uv-django`](python-uv-django/)
+- **Comprehensive README** - Detailed documentation for each template
+- **Testing Setup** - Jest (TypeScript) or pytest (Python) with examples
+- **Code Quality** - Linting, formatting, and type checking
+- **Docker Support** - Multi-stage Dockerfiles for dev and production
+- **CI/CD Pipeline** - GitHub Actions workflows
+- **Project Structure** - Organized, scalable architecture
+- **Development Tools** - Hot reloading, debugging support
 
 ---
 
@@ -339,7 +265,7 @@ Contributions are welcome! If you'd like to add a new template or improve existi
 
 ## License
 
-[Your License Here]
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ## Support
 
@@ -347,4 +273,4 @@ For issues, questions, or suggestions, please open an issue in the GitHub reposi
 
 ---
 
-**Built with ❤️ for developers who value quality and productivity**
+If you find any of these templates useful, please consider starring the repository to show your support! ⭐
