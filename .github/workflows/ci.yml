@@ -22,6 +22,8 @@ jobs:
           - typescript-node-simple
           - typescript-node-azfunc-v4
           - typescript-node-azfunc-v4-durable
+          - typescript-node-playwright
+          - typescript-node-playwright-kameleo
 
     steps:
       - name: Checkout code
@@ -37,6 +39,11 @@ jobs:
       - name: Install dependencies
         working-directory: ${{ matrix.template }}
         run: npm ci
+
+      - name: Install Playwright browsers
+        if: matrix.template == 'typescript-node-playwright' || matrix.template == 'typescript-node-playwright-kameleo'
+        working-directory: ${{ matrix.template }}
+        run: npx playwright install --with-deps chromium
 
       - name: Type check
         working-directory: ${{ matrix.template }}
@@ -249,6 +256,8 @@ jobs:
           - typescript-node-azfunc-v4
           - typescript-node-azfunc-v4-durable
           - typescript-node-simple
+          - typescript-node-playwright
+          - typescript-node-playwright-kameleo
         target:
           - production
           - development
